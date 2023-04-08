@@ -6,6 +6,11 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class DeviceDto(
+    val results: List<Result>?
+)
+
+@JsonClass(generateAdapter = true)
+data class Result(
     val createddate: String?,
     val detail: String?,
     val device: String?,
