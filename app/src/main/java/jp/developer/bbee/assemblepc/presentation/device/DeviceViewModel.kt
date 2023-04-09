@@ -1,9 +1,8 @@
 package jp.developer.bbee.assemblepc.presentation.device
 
+import android.util.Log
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,11 +19,13 @@ class DeviceViewModel @Inject constructor(
     // navigate()のrouteパラメータを受け取るためのSavedStateHandle
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    private val TAG = "DeviceViewModel"
     private val _state = mutableStateOf(DeviceState())
     val state: State<DeviceState> = _state
 
     init {
         savedStateHandle.get<String>("device")?.let {
+            Log.d(TAG, "getDeviceList(): for $it")
             getDeviceList(it)
         }
     }
@@ -35,12 +36,15 @@ class DeviceViewModel @Inject constructor(
             when (it) {
                 is NetworkResponse.Loading -> {
                     _state.value = DeviceState(isLoading = true)
+                    Log.d(TAG, "NetworkResponse is Loading")
                 }
                 is NetworkResponse.Success -> {
                     _state.value = DeviceState(devices = it.data ?: emptyList())
+                    Log.d(TAG, "NetworkResponse is Success")
                 }
                 is NetworkResponse.Failure -> {
                     _state.value = DeviceState(error = it.error)
+                    Log.d(TAG, "NetworkResponse is error : ${it.error}")
                 }
             }
         }.launchIn(viewModelScope)
