@@ -1,4 +1,4 @@
-package jp.developer.bbee.assemblepc.ui.theme
+package jp.developer.bbee.assemblepc.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
