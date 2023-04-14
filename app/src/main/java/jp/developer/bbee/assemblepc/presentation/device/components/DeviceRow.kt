@@ -26,7 +26,7 @@ fun DeviceRow(
 ) {
     Card(
         elevation = 8.dp,
-        modifier = Modifier.heightIn(min = 120.dp)
+        modifier = Modifier.heightIn(min = 120.dp).padding(vertical = 2.dp)
     ) {
         Column(
             modifier = Modifier
