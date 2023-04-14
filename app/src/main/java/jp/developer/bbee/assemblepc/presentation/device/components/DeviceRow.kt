@@ -56,15 +56,8 @@ fun DeviceRow(
                         modifier = Modifier
                             .height(80.dp)
                             .width(80.dp),
-                        contentDescription = "CheckCircle"
+                        contentDescription = "製品画像"
                     )
-//                    Image(
-//                        imageVector = Icons.Default.CheckCircle,
-//                        modifier = Modifier
-//                            .height(80.dp)
-//                            .width(80.dp),
-//                        contentDescription = "CheckCircle"
-//                    )
                     Text(
                         text = device.detail,
                         style = MaterialTheme.typography.body1,
