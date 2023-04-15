@@ -1,7 +1,11 @@
 package jp.developer.bbee.assemblepc.domain.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class Device(
-    val id: String,
+    @PrimaryKey val id: String,
     val device: String,
     val name: String,
     val imgurl: String,
