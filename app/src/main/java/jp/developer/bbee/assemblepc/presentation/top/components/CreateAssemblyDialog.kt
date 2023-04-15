@@ -9,7 +9,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import jp.developer.bbee.assemblepc.presentation.ScreenRoute
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.DeviceScreen
+import jp.developer.bbee.assemblepc.presentation.ScreenRoute.SelectionScreen
 
 @Composable
 fun CreateAssemblyDialog(
@@ -18,7 +20,7 @@ fun CreateAssemblyDialog(
 ) {
     var assemblyName by remember { mutableStateOf("") }
     AlertDialog(
-        backgroundColor = Color(0xFFF6F2F0),
+        //backgroundColor = Color(0xFFF6F2F0),
         onDismissRequest = { showDialogState.value = false },
         title = {
             Text(
@@ -54,7 +56,7 @@ fun CreateAssemblyDialog(
                     modifier = Modifier.padding(horizontal = 15.dp),
                     onClick = {
                         showDialogState.value = false
-                        navController.navigate(DeviceScreen.route + "/pccase")
+                        navController.navigate(SelectionScreen.route)
                     }
                 ) {
                     Text(text = "新規作成")
