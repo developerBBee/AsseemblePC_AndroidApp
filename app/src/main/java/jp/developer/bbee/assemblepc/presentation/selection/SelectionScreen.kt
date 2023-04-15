@@ -5,9 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import jp.developer.bbee.assemblepc.presentation.ScreenRoute
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.DeviceScreen
 import jp.developer.bbee.assemblepc.presentation.selection.components.ButtonsRow
 
@@ -18,7 +16,8 @@ val deviceTypes: List<Map<String, String>> = mutableListOf(
     mapOf("text" to "CPU", "path" to "/cpu"),
     mapOf("text" to "CPUクーラー", "path" to "/cpucooler"),
     mapOf("text" to "メモリ", "path" to "/pcmemory"),
-    mapOf("text" to "ストレージ", "path" to "/storage"),
+    mapOf("text" to "SSD", "path" to "/ssd"),
+    mapOf("text" to "HDD", "path" to "/hdd35inch"),
     mapOf("text" to "グラフィック\nボード", "path" to "/videocard"),
 )
 
