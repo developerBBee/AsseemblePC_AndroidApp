@@ -26,7 +26,7 @@ fun DeviceRow(
 ) {
     Card(
         elevation = 8.dp,
-        modifier = Modifier.heightIn(min = 120.dp)
+        modifier = Modifier.heightIn(min = 120.dp).padding(vertical = 2.dp)
     ) {
         Column(
             modifier = Modifier
@@ -56,22 +56,15 @@ fun DeviceRow(
                         modifier = Modifier
                             .height(80.dp)
                             .width(80.dp),
-                        contentDescription = "CheckCircle"
+                        contentDescription = "製品画像"
                     )
-//                    Image(
-//                        imageVector = Icons.Default.CheckCircle,
-//                        modifier = Modifier
-//                            .height(80.dp)
-//                            .width(80.dp),
-//                        contentDescription = "CheckCircle"
-//                    )
                     Text(
+                        modifier = Modifier.weight(1f).padding(horizontal = 5.dp),
                         text = device.detail,
                         style = MaterialTheme.typography.body1,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xff2f4f4f)
                     )
-                    Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = if (device.price > 0 ) "¥ ${device.price}" else "価格情報なし",
                         style = MaterialTheme.typography.h6,
