@@ -6,5 +6,5 @@ import androidx.room.PrimaryKey
 @Entity
 data class DeviceUpdate(
     @PrimaryKey val device: String,
-    val update: String // format example: "20230101"
+    val update: Int // format example: 20230101
 )

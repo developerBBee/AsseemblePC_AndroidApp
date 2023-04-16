@@ -13,6 +13,7 @@ import jp.developer.bbee.assemblepc.common.Constants.BASE_URL
 import jp.developer.bbee.assemblepc.data.remote.DeviceApi
 import jp.developer.bbee.assemblepc.data.repository.DeviceRepositoryImpl
 import jp.developer.bbee.assemblepc.data.room.AppDatabase
+import jp.developer.bbee.assemblepc.data.room.AssemblyDeviceDao
 import jp.developer.bbee.assemblepc.domain.repository.DeviceRepository
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -35,15 +36,17 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDeviceRepository(api: DeviceApi): DeviceRepository {
-        return DeviceRepositoryImpl(api)
-    }
-
-    @Provides
     fun provideDatabase(
         @ApplicationContext context: Context
     ) = Room.databaseBuilder(context, AppDatabase::class.java, "assemblepc_database").build()
 
     @Provides
+    @Singleton
     fun provideDao(db: AppDatabase) = db.getAssemblyDeviceDao()
+
+    @Provides
+    @Singleton
+    fun provideDeviceRepository(api: DeviceApi, dao: AssemblyDeviceDao): DeviceRepository {
+        return DeviceRepositoryImpl(api, dao)
+    }
 }

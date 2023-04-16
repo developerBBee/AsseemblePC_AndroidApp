@@ -2,20 +2,20 @@ package jp.developer.bbee.assemblepc.domain.use_case
 
 import jp.developer.bbee.assemblepc.common.DatabaseResponse
 import jp.developer.bbee.assemblepc.domain.model.DeviceUpdate
-import jp.developer.bbee.assemblepc.domain.repository.DeviceRoomRepository
+import jp.developer.bbee.assemblepc.domain.repository.DeviceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class StoreDeviceUseCase @Inject constructor(
-    private val deviceRoomRepository: DeviceRoomRepository
+    private val deviceRoomRepository: DeviceRepository
 ){
     /**
      * デバイスの更新日時を更新・保存する
      * @param device デバイスタイプ名
-     * @param update 更新日時 example "20230101"
+     * @param update 更新日時 example 20230101
      */
-    suspend operator fun invoke(device: String, update: String): Flow<DatabaseResponse<DeviceUpdate>> = flow {
+    suspend operator fun invoke(device: String, update: Int): Flow<DatabaseResponse<DeviceUpdate>> = flow {
         try {
             emit(DatabaseResponse.Loading())
             if (deviceRoomRepository.existDeviceUpdate(device) > 0) {
