@@ -3,6 +3,7 @@ package jp.developer.bbee.assemblepc.data.room
 import androidx.room.*
 import jp.developer.bbee.assemblepc.domain.model.Assembly
 import jp.developer.bbee.assemblepc.domain.model.Device
+import jp.developer.bbee.assemblepc.domain.model.DeviceUpdate
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.annotations.NotNull
 
@@ -60,4 +61,17 @@ interface AssemblyDeviceDao {
         """
     )
     fun loadAssemblyNewPrice(assemblyId: Int): Flow<List<Assembly>>
+
+    /**
+     * DeviceUpdate Table CRUD
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDeviceUpdate(deviceUpdate: DeviceUpdate)
+
+    @Query("SELECT * FROM DeviceUpdate WHERE device = :device")
+    suspend fun loadDeviceUpdate(device: String): List<DeviceUpdate>
+
+    // 存在チェック 0:存在しない >0:存在する
+    @Query("SELECT COUNT(*) FROM DeviceUpdate WHERE device = :device")
+    suspend fun existDeviceUpdate(device: String): Int
 }
