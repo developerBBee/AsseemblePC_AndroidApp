@@ -3,8 +3,7 @@ package jp.developer.bbee.assemblepc.data.room
 import androidx.room.*
 import jp.developer.bbee.assemblepc.domain.model.Assembly
 import jp.developer.bbee.assemblepc.domain.model.Device
-import kotlinx.coroutines.flow.Flow
-import org.jetbrains.annotations.NotNull
+import jp.developer.bbee.assemblepc.domain.model.DeviceUpdate
 
 @Dao
 interface AssemblyDeviceDao {
@@ -16,7 +15,7 @@ interface AssemblyDeviceDao {
     suspend fun insertDevice(device: Device)
 
     @Query("SELECT * FROM Device WHERE device = :device")
-    fun loadDevice(device: String): Flow<List<Device>>
+    suspend fun loadDevice(device: String): List<Device>
 
     // 存在チェック 0:存在しない >0:存在する
     @Query("SELECT COUNT(*) FROM Device WHERE id = :id")
@@ -30,7 +29,7 @@ interface AssemblyDeviceDao {
     suspend fun insertAssembly(assembly: Assembly)
 
     @Query("SELECT * FROM Assembly WHERE assemblyId = :assemblyId")
-    fun loadAssembly(assemblyId: Int): Flow<List<Assembly>>
+    suspend fun loadAssembly(assemblyId: Int): List<Assembly>
 
     @Delete
     suspend fun deleteAssembly(assembly: Assembly)
@@ -51,6 +50,7 @@ interface AssemblyDeviceDao {
                 Assembly.deviceId,
                 Assembly.deviceType,
                 Assembly.deviceName,
+                Assembly.deviceImgUrl,
                 Assembly.devicePriceSaved,
                 Device.price AS devicePriceRecent
             FROM Assembly
@@ -59,5 +59,18 @@ interface AssemblyDeviceDao {
             WHERE assemblyId = :assemblyId
         """
     )
-    fun loadAssemblyNewPrice(assemblyId: Int): Flow<List<Assembly>>
+    suspend fun loadAssemblyNewPrice(assemblyId: Int): List<Assembly>
+
+    /**
+     * DeviceUpdate Table CRUD
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDeviceUpdate(deviceUpdate: DeviceUpdate)
+
+    @Query("SELECT * FROM DeviceUpdate WHERE device = :device")
+    suspend fun loadDeviceUpdate(device: String): List<DeviceUpdate>
+
+    // 存在チェック 0:存在しない >0:存在する
+    @Query("SELECT COUNT(*) FROM DeviceUpdate WHERE device = :device")
+    suspend fun existDeviceUpdate(device: String): Int
 }

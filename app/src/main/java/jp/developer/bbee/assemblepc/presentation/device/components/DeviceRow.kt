@@ -66,7 +66,7 @@ fun DeviceRow(
                         color = Color(0xff2f4f4f)
                     )
                     Text(
-                        text = if (device.price > 0 ) "¥ ${device.price}" else "価格情報なし",
+                        text = if (device.price > 0 ) "¥ ${"%,d".format(device.price)}" else "価格情報なし",
                         style = MaterialTheme.typography.h6,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color(0xff2f4f4f)
