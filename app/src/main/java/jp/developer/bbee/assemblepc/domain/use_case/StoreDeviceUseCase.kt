@@ -10,6 +10,11 @@ import javax.inject.Inject
 class StoreDeviceUseCase @Inject constructor(
     private val deviceRoomRepository: DeviceRoomRepository
 ){
+    /**
+     * デバイスの更新日時を更新・保存する
+     * @param device デバイスタイプ名
+     * @param update 更新日時 example "20230101"
+     */
     suspend operator fun invoke(device: String, update: String): Flow<DatabaseResponse<DeviceUpdate>> = flow {
         try {
             emit(DatabaseResponse.Loading())
