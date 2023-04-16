@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import jp.developer.bbee.assemblepc.presentation.top.components.AssemblyThumbnail
 import jp.developer.bbee.assemblepc.presentation.top.components.CreateAssemblyDialog
 
 @Composable
@@ -30,11 +31,10 @@ fun TopScreen(
             modifier = Modifier.weight(0.8f).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(100) {
-                Text(
-                    text = "構成 ${it+1}",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
+            items(1) {
+                AssemblyThumbnail(
+                    assemblies = emptyList(),
+                    onClick = { }
                 )
             }
         }
