@@ -16,12 +16,8 @@ import jp.developer.bbee.assemblepc.presentation.device.AssemblyViewModel
 @Composable
 fun AddAssemblyDialog(
     assemblyViewModel: AssemblyViewModel = hiltViewModel()
-//    title: String,
-//    imgurl: String,
-//    description: String,
-//    onConfirm: () -> Unit,
-//    onDismiss: () -> Unit
 ) {
+    val device = assemblyViewModel.selectedDevice
     AlertDialog(
         onDismissRequest = { assemblyViewModel.isShowDialog = false },
         title = {
@@ -34,14 +30,13 @@ fun AddAssemblyDialog(
         text = {
             Row {
                 AsyncImage(
-                    model = assemblyViewModel.selectedDevice?.imgurl,
+                    model = device?.imgurl,
                     modifier = Modifier
                         .height(80.dp)
                         .width(80.dp),
-                    contentDescription = "仮置きdescription"
+                    contentDescription = "製品画像"
                 )
                 Column {
-                    val device = assemblyViewModel.selectedDevice
                     Text(text = device?.name ?: "製品不明")
                     Text(
                         text = if(device == null) "製品不明"

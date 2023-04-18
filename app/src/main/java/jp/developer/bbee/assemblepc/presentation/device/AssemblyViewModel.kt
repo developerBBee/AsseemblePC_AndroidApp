@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AssemblyViewModel @Inject constructor(
     private val addAssemblyUseCase: AddAssemblyUseCase,
+    // navigate()のrouteパラメータを受け取るためのSavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val TAG = "AssemblyViewModel"
 
@@ -25,14 +28,21 @@ class AssemblyViewModel @Inject constructor(
 
     var isShowDialog by mutableStateOf(false)
 
-    var selectAssemblyId = 0
+    var selectedAssemblyId = 0
+    var selectedAssemblyName = ""
     var selectedDevice: Device? = null
+
+    init {
+        savedStateHandle.get<String>("name")?.let {
+            selectedAssemblyName = it
+        }
+    }
 
     fun addAssembly() {
         selectedDevice?.let {
             val assembly = Assembly(
-                assemblyId = selectAssemblyId,
-                assemblyName = "TEST",
+                assemblyId = selectedAssemblyId,
+                assemblyName = selectedAssemblyName,
                 deviceId = it.id,
                 deviceType = it.device,
                 deviceName = it.name,

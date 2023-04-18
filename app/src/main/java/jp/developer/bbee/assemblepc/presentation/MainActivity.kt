@@ -36,10 +36,10 @@ class MainActivity : ComponentActivity() {
                         composable(TopScreen.route) {
                             TopScreen(navController)
                         }
-                        composable(SelectionScreen.route) {
+                        composable(SelectionScreen.route + "/{name}") {
                             SelectionScreen(navController)
                         }
-                        composable(DeviceScreen.route + "/{device}") {
+                        composable(DeviceScreen.route + "/{device}" + "/{name}") {
                             DeviceScreen()
                         }
                     }

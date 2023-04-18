@@ -7,14 +7,15 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import jp.developer.bbee.assemblepc.presentation.device.AssemblyViewModel
 import jp.developer.bbee.assemblepc.presentation.device.DeviceViewModel
 
 @Composable
 fun AssemblyInfo(
-    assemblyViewModel: DeviceViewModel = hiltViewModel()
+    assemblyViewModel: AssemblyViewModel = hiltViewModel()
 ) {
     Row (modifier = Modifier.fillMaxWidth()){
-        Text(text = "構成名称")
+        Text(text = "構成名称:${assemblyViewModel.selectedAssemblyName}")
         Spacer(modifier =Modifier.weight(1f))
         Text(text = "合計金額　¥ 10,000")
     }
