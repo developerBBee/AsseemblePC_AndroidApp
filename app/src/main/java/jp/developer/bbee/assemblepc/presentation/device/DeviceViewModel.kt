@@ -24,8 +24,6 @@ class DeviceViewModel @Inject constructor(
 ) : ViewModel() {
     private val TAG = "DeviceViewModel"
 
-    var isShowDialog by mutableStateOf(false)
-
     private val _state = mutableStateOf(DeviceState())
     val state: State<DeviceState> = _state
 
