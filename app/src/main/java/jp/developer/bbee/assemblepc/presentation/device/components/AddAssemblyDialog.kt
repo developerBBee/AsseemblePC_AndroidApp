@@ -10,11 +10,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import jp.developer.bbee.assemblepc.presentation.ScreenRoute
 import jp.developer.bbee.assemblepc.presentation.device.AssemblyViewModel
 
 @Composable
 fun AddAssemblyDialog(
+    navController: NavController,
     assemblyViewModel: AssemblyViewModel = hiltViewModel()
 ) {
     val device = assemblyViewModel.selectedDevice
@@ -56,6 +59,10 @@ fun AddAssemblyDialog(
                     onClick = {
                         assemblyViewModel.isShowDialog = false
                         assemblyViewModel.addAssembly()
+                        navController.navigate(
+                            ScreenRoute.AssemblyScreen.route
+                                    + "/${assemblyViewModel.selectedAssemblyId}"
+                        )
                     }
                 ) {
                     Text(text = "追加")

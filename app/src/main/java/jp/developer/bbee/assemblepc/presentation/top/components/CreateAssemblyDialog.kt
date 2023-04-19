@@ -57,7 +57,7 @@ fun CreateAssemblyDialog(
                     onClick = {
                         showDialogState.value = false
                         val name = if(assemblyName == "") "構成名なし" else assemblyName
-                        navController.navigate(SelectionScreen.route + "/$name")
+                        navController.navigate(SelectionScreen.route + "/0" + "/$name")
                     }
                 ) {
                     Text(text = "新規作成")

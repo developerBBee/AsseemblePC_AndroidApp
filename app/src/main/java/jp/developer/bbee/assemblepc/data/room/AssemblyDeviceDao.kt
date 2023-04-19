@@ -37,6 +37,8 @@ interface AssemblyDeviceDao {
     @Query("DELETE FROM Assembly WHERE assemblyId = :assemblyId")
     suspend fun deleteAssemblyById(assemblyId: Int)
 
+    @Query("SELECT MAX(assemblyId) FROM Assembly")
+    suspend fun loadMaxAssemblyId(): Int?
 
     /**
      * AssemblyDevice Join

@@ -46,15 +46,17 @@ fun SelectionScreen(
                     onClickLeftButton = {
                         navController.navigate(
                             DeviceScreen.route
+                                    + "/${assemblyViewModel.selectedAssemblyId}"
                                     + leftType.getOrDefault("path", "")
-                                    + "/${assemblyViewModel.selectedAssemblyName}"
+                                    + "/${assemblyViewModel.selectedAssemblyName.value}"
                         )
                     },
                     onClickRightButton = {
                         navController.navigate(
                             DeviceScreen.route
+                                    + "/${assemblyViewModel.selectedAssemblyId}"
                                     + rightType?.getOrDefault("path", "")
-                                    + "/${assemblyViewModel.selectedAssemblyName}"
+                                    + "/${assemblyViewModel.selectedAssemblyName.value}"
                         )
                     }
                 )
