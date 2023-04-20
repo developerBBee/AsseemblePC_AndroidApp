@@ -61,6 +61,10 @@ class DeviceRepositoryImpl @Inject constructor(
         return assemblyDeviceDao.loadAssembly(assemblyId)
     }
 
+    override suspend fun loadAllAssembly(): List<Assembly> {
+        return assemblyDeviceDao.loadAllAssembly()
+    }
+
     override suspend fun insertAssembly(assembly: Assembly) {
         assemblyDeviceDao.insertAssembly(assembly)
     }

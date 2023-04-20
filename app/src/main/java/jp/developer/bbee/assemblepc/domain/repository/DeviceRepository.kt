@@ -9,6 +9,7 @@ interface DeviceRepository {
     suspend fun getDeviceList(device: String): DeviceDto
 
     suspend fun loadAssembly(assemblyId: Int): List<Assembly>
+    suspend fun loadAllAssembly(): List<Assembly>
     suspend fun insertAssembly(assembly: Assembly)
     suspend fun loadMaxAssemblyId(): Int?
 
