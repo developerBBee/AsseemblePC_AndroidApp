@@ -31,12 +31,17 @@ interface AssemblyDeviceDao {
     @Query("SELECT * FROM Assembly WHERE assemblyId = :assemblyId")
     suspend fun loadAssembly(assemblyId: Int): List<Assembly>
 
+    @Query("SELECT * FROM Assembly ORDER BY assemblyId DESC")
+    suspend fun loadAllAssembly(): List<Assembly>
+
     @Delete
     suspend fun deleteAssembly(assembly: Assembly)
 
     @Query("DELETE FROM Assembly WHERE assemblyId = :assemblyId")
     suspend fun deleteAssemblyById(assemblyId: Int)
 
+    @Query("SELECT MAX(assemblyId) FROM Assembly")
+    suspend fun loadMaxAssemblyId(): Int?
 
     /**
      * AssemblyDevice Join

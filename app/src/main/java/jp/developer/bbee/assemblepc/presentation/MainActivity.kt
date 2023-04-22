@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.*
+import jp.developer.bbee.assemblepc.presentation.device.AssemblyScreen
 import jp.developer.bbee.assemblepc.presentation.device.DeviceScreen
 import jp.developer.bbee.assemblepc.presentation.selection.SelectionScreen
 import jp.developer.bbee.assemblepc.presentation.top.TopScreen
@@ -36,11 +37,14 @@ class MainActivity : ComponentActivity() {
                         composable(TopScreen.route) {
                             TopScreen(navController)
                         }
-                        composable(SelectionScreen.route) {
+                        composable(SelectionScreen.route + "/{id}" + "/{name}") {
                             SelectionScreen(navController)
                         }
-                        composable(DeviceScreen.route + "/{device}") {
-                            DeviceScreen()
+                        composable(DeviceScreen.route + "/{id}" + "/{device}" + "/{name}") {
+                            DeviceScreen(navController)
+                        }
+                        composable(AssemblyScreen.route + "/{id}") {
+                            AssemblyScreen()
                         }
                     }
                 }

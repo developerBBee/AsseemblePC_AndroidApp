@@ -1,36 +1,31 @@
 package jp.developer.bbee.assemblepc.presentation.device
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import jp.developer.bbee.assemblepc.presentation.device.components.AddAssemblyDialog
 import jp.developer.bbee.assemblepc.presentation.device.components.AssemblyInfo
-import jp.developer.bbee.assemblepc.presentation.device.components.DeviceRow
 
 @Composable
-fun DeviceScreen(
-    navController: NavController,
-    deviceViewModel: DeviceViewModel = hiltViewModel(),
+fun AssemblyScreen(
     assemblyViewModel: AssemblyViewModel = hiltViewModel()
-) {
-    val state = deviceViewModel.state.value
+){
+    val assemblies = assemblyViewModel.assemblies
+
     Column(modifier = Modifier.fillMaxSize()) {
         AssemblyInfo()
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(state.devices) { device ->
-                DeviceRow(device = device) {
-                    assemblyViewModel.selectedDevice = it
-                    assemblyViewModel.isShowDialog = true
+            items(assemblies.value) { assembly ->
+                Row {
+                    Text(text = assembly.deviceName)
                 }
             }
         }
-    }
-    if (assemblyViewModel.isShowDialog) {
-        AddAssemblyDialog(navController)
     }
 }
