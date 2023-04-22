@@ -1,5 +1,6 @@
 package jp.developer.bbee.assemblepc.presentation.top
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,12 +27,14 @@ fun TopScreen(
     val showDialogState = remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
     ) {
         // Temporary code
         LazyColumn(
             modifier = Modifier
-                .weight(0.8f)
+                .weight(0.9f)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -44,7 +47,7 @@ fun TopScreen(
         }
         Column(
             modifier = Modifier
-                .weight(0.2f)
+                .weight(0.1f)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
