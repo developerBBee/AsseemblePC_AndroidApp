@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import jp.developer.bbee.assemblepc.presentation.ScreenRoute
 import jp.developer.bbee.assemblepc.presentation.top.components.AssemblyThumbnail
 import jp.developer.bbee.assemblepc.presentation.top.components.CreateAssemblyDialog
 
@@ -41,7 +42,9 @@ fun TopScreen(
             items(topViewModel.allAssemblyList) {
                 AssemblyThumbnail(
                     assemblies = it,
-                    onClick = { }
+                    onClick = {
+                        navController.navigate(ScreenRoute.AssemblyScreen.route + "/${it[0].assemblyId}")
+                    }
                 )
             }
         }

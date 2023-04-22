@@ -15,9 +15,12 @@ import jp.developer.bbee.assemblepc.presentation.device.DeviceViewModel
 fun AssemblyInfo(
     assemblyViewModel: AssemblyViewModel = hiltViewModel()
 ) {
+    val prices = assemblyViewModel.assemblies.value.sumOf { it.devicePriceRecent }
+    val isNoPrice = assemblyViewModel.assemblies.value.any { it.devicePriceRecent == 0 }
     Row (modifier = Modifier.fillMaxWidth()){
         Text(text = "構成名称:${assemblyViewModel.selectedAssemblyName.value}")
         Spacer(modifier =Modifier.weight(1f))
-        Text(text = "合計金額　¥ 10,000")
+        // TODO: 価格のインクリメントアニメーションを追加したい
+        Text(text = "合計金額　¥ ${"%,d".format(prices) + if (isNoPrice) "(価格無しを含む)" else ""}")
     }
 }
