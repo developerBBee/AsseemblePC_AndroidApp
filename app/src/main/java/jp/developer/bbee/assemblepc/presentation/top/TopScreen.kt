@@ -43,7 +43,12 @@ fun TopScreen(
                 AssemblyThumbnail(
                     assemblies = it,
                     onClick = {
-                        navController.navigate(ScreenRoute.AssemblyScreen.route + "/${it[0].assemblyId}")
+                        navController.navigate(
+                            ScreenRoute.AssemblyScreen.route
+                                    + "/${it[0].assemblyId}"
+                                    + "/${it[0].assemblyName}"
+                                    + "/pccase"
+                        )
                     }
                 )
             }

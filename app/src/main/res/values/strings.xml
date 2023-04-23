@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">AssemblePC</string>
+    <string name="top_screen">TOP</string>
+    <string name="selection_screen">SELECT</string>
+    <string name="device_screen">DEVICE</string>
+    <string name="assembly_screen">ASSEMBLY</string>
 </resources>

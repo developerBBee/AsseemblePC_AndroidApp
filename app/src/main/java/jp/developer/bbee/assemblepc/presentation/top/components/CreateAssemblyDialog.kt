@@ -4,13 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import jp.developer.bbee.assemblepc.presentation.ScreenRoute
-import jp.developer.bbee.assemblepc.presentation.ScreenRoute.DeviceScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.SelectionScreen
 
 @Composable
@@ -57,7 +54,7 @@ fun CreateAssemblyDialog(
                     onClick = {
                         showDialogState.value = false
                         val name = if(assemblyName == "") "構成名なし" else assemblyName
-                        navController.navigate(SelectionScreen.route + "/0" + "/$name")
+                        navController.navigate(SelectionScreen.route + "/0" + "/$name" + "/${null}")
                     }
                 ) {
                     Text(text = "新規作成")
