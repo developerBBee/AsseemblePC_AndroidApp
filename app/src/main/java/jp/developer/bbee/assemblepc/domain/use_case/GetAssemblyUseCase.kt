@@ -2,7 +2,6 @@ package jp.developer.bbee.assemblepc.domain.use_case
 
 import jp.developer.bbee.assemblepc.domain.model.Assembly
 import jp.developer.bbee.assemblepc.domain.repository.DeviceRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetAssemblyUseCase @Inject constructor(
