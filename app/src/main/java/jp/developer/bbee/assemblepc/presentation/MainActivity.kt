@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -12,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.*
+import jp.developer.bbee.assemblepc.presentation.components.BottomNavBar
 import jp.developer.bbee.assemblepc.presentation.device.AssemblyScreen
 import jp.developer.bbee.assemblepc.presentation.device.DeviceScreen
 import jp.developer.bbee.assemblepc.presentation.selection.SelectionScreen
@@ -30,21 +33,37 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(
-                        navController = navController,
-                        startDestination = TopScreen.route,
-                    ) {
-                        composable(TopScreen.route) {
-                            TopScreen(navController)
+
+                    Scaffold(
+                        bottomBar = {
+                            BottomNavBar(
+                                navController = navController,
+                                items = listOf(
+                                    TopScreen,
+                                    SelectionScreen,
+                                    DeviceScreen,
+                                    AssemblyScreen
+                                )
+                            )
                         }
-                        composable(SelectionScreen.route + "/{id}" + "/{name}") {
-                            SelectionScreen(navController)
-                        }
-                        composable(DeviceScreen.route + "/{id}" + "/{device}" + "/{name}") {
-                            DeviceScreen(navController)
-                        }
-                        composable(AssemblyScreen.route + "/{id}") {
-                            AssemblyScreen()
+                    ) { innerPadding ->
+                        NavHost(
+                            navController = navController,
+                            startDestination = TopScreen.route,
+                            modifier = Modifier.padding(innerPadding)
+                        ) {
+                            composable(TopScreen.route) {
+                                TopScreen(navController)
+                            }
+                            composable(SelectionScreen.route + "/{id}" + "/{name}") {
+                                SelectionScreen(navController)
+                            }
+                            composable(DeviceScreen.route + "/{id}" + "/{device}" + "/{name}") {
+                                DeviceScreen(navController)
+                            }
+                            composable(AssemblyScreen.route + "/{id}") {
+                                AssemblyScreen()
+                            }
                         }
                     }
                 }
