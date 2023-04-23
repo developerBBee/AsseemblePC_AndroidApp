@@ -55,13 +55,13 @@ class MainActivity : ComponentActivity() {
                             composable(TopScreen.route) {
                                 TopScreen(navController)
                             }
-                            composable(SelectionScreen.route + "/{id}" + "/{name}") {
+                            composable(SelectionScreen.route + "/{id}" + "/{name}" + "/{device}") {
                                 SelectionScreen(navController)
                             }
-                            composable(DeviceScreen.route + "/{id}" + "/{device}" + "/{name}") {
+                            composable(DeviceScreen.route + "/{id}" + "/{name}" + "/{device}") {
                                 DeviceScreen(navController)
                             }
-                            composable(AssemblyScreen.route + "/{id}") {
+                            composable(AssemblyScreen.route + "/{id}" + "/{name}" + "/{device}") {
                                 AssemblyScreen()
                             }
                         }

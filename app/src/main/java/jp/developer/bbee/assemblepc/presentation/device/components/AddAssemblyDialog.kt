@@ -62,6 +62,8 @@ fun AddAssemblyDialog(
                         navController.navigate(
                             ScreenRoute.AssemblyScreen.route
                                     + "/${assemblyViewModel.selectedAssemblyId}"
+                                    + "/${assemblyViewModel.selectedAssemblyName.value}"
+                                    + "/${assemblyViewModel.selectedDevice?.device ?: "pccase"}"
                         )
                     }
                 ) {
