@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute
-import jp.developer.bbee.assemblepc.presentation.ScreenRoute.*
+import jp.developer.bbee.assemblepc.presentation.ScreenRoute.TopScreen
 
 @Composable
 fun BottomNavBar(
@@ -30,7 +30,7 @@ fun BottomNavBar(
                     )
                 },
                 label = { Text(text = stringResource(id = screenRoute.resourceId)) },
-                selected = currentRoute == screenRoute.route,
+                selected = currentRoute?.contains(screenRoute.route) == true,
                 onClick = {
                     if (currentRoute?.contains(screenRoute.route) == true) return@BottomNavigationItem
                     // TODO デバイスID未設定の場合、AddAssemblyDialogを呼ぶようにしたい。現状は無効としている。
