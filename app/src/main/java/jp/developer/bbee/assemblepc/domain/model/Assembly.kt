@@ -12,6 +12,7 @@ data class Assembly(
     val deviceType: String,
     val deviceName : String,
     val deviceImgUrl: String,
+    val deviceDetail: String,
     val devicePriceSaved: Int,
     val devicePriceRecent: Int
 )

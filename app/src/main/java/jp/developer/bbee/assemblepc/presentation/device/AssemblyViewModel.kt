@@ -72,6 +72,7 @@ class AssemblyViewModel @Inject constructor(
                 deviceType = it.device,
                 deviceName = it.name,
                 deviceImgUrl = it.imgurl,
+                deviceDetail = it.detail,
                 devicePriceSaved = it.price,
                 devicePriceRecent = it.price
             )

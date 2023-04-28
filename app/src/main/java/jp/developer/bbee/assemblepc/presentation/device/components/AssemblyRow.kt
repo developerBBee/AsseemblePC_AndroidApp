@@ -104,8 +104,8 @@ fun AssemblyRow(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // TODO AssemblyにdeviceDescriptionを追加して、ここで呼ぶ
-                Text(text = assembly.deviceName, modifier = Modifier.padding(10.dp))
+                // TODO 名称、画像、金額、削除ボタンを追加する
+                Text(text = assembly.deviceDetail, modifier = Modifier.padding(10.dp))
             }
         }
     }
