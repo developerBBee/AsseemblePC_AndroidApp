@@ -19,6 +19,6 @@ fun AssemblyInfo(
         Text(text = "構成名称:${assemblyViewModel.selectedAssemblyName.value}")
         Spacer(modifier =Modifier.weight(1f))
         // TODO: 価格のインクリメントアニメーションを追加したい
-        Text(text = "合計金額　¥ ${"%,d".format(prices) + if (isNoPrice) "(価格無しを含む)" else ""}")
+        Text(text = "合計金額　¥ ${"%,d".format(prices) + if (isNoPrice) "(＋α)" else ""}")
     }
 }

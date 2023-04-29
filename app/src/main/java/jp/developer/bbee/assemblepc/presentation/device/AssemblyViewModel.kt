@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.developer.bbee.assemblepc.domain.model.Assembly
 import jp.developer.bbee.assemblepc.domain.model.Device
 import jp.developer.bbee.assemblepc.domain.use_case.AddAssemblyUseCase
+import jp.developer.bbee.assemblepc.domain.use_case.DeleteItemUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetAssemblyUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetMaxAssemblyIdUseCase
 import kotlinx.coroutines.launch
@@ -21,6 +22,7 @@ class AssemblyViewModel @Inject constructor(
     private val addAssemblyUseCase: AddAssemblyUseCase,
     private val getMaxAssemblyIdUseCase: GetMaxAssemblyIdUseCase,
     private val getAssemblyUseCase: GetAssemblyUseCase,
+    private val deleteItemUseCase: DeleteItemUseCase,
     // navigate()のrouteパラメータを受け取るためのSavedStateHandle
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -79,6 +81,13 @@ class AssemblyViewModel @Inject constructor(
             viewModelScope.launch {
                 addAssemblyUseCase(assembly)
             }
+        }
+    }
+
+    fun deleteAssembly(assembly: Assembly) {
+        viewModelScope.launch {
+            deleteItemUseCase(assembly)
+            assemblies.value = getAssemblyUseCase(selectedAssemblyId)
         }
     }
 }

@@ -12,12 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import jp.developer.bbee.assemblepc.domain.model.Assembly
+import jp.developer.bbee.assemblepc.presentation.device.AssemblyViewModel
 
 @Composable
 fun AssemblyDetailDialog(
     assembly: Assembly,
-    isShowDetailDialog: MutableState<Boolean>
+    isShowDetailDialog: MutableState<Boolean>,
+    assemblyViewModel: AssemblyViewModel = hiltViewModel()
 ) {
 
     AlertDialog(
@@ -57,7 +60,7 @@ fun AssemblyDetailDialog(
                             .padding(horizontal = 5.dp)
                             .clickable {
                                 isShowDetailDialog.value = false
-                                // TODO 削除処理を記述する
+                                assemblyViewModel.deleteAssembly(assembly)
                             },
                         fontSize = 18.sp,
                         fontWeight = FontWeight.ExtraBold
