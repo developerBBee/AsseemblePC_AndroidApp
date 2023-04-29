@@ -4,11 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +25,16 @@ fun AssemblyThumbnail(
     assemblies: List<Assembly> = emptyList(),
     onClick: () -> Unit
 ) {
+    Card(elevation = 5.dp, modifier = Modifier.padding(10.dp)) {
+        ThumbnailContents(assemblies = assemblies, onClick = onClick)
+    }
+}
+
+@Composable
+fun ThumbnailContents(
+    assemblies: List<Assembly>,
+    onClick: () -> Unit
+) {
     val max = assemblies.size
     Box(
         modifier = Modifier
@@ -32,7 +45,7 @@ fun AssemblyThumbnail(
             .clickable { onClick() }
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(10.dp)
         ) {
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -41,36 +54,25 @@ fun AssemblyThumbnail(
             ) {
                 AsyncImage(
                     model = if (max > 0) assemblies[0].deviceImgUrl else null,
-                    modifier = Modifier.weight(1f).fillMaxSize(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize(),
                     contentDescription = "左上の画像"
                 )
                 AsyncImage(
                     model = if (max > 1) assemblies[1].deviceImgUrl else null,
-                    modifier = Modifier.weight(1f).fillMaxSize(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize(),
                     contentDescription = "中上の画像"
                 )
                 AsyncImage(
                     model = if (max > 2) assemblies[2].deviceImgUrl else null,
-                    modifier = Modifier.weight(1f).fillMaxSize(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize(),
                     contentDescription = "右上の画像"
                 )
-                /*
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "左上の画像",
-                    modifier = Modifier.weight(1f).fillMaxSize()
-                )
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "中上の画像",
-                    modifier = Modifier.weight(1f).fillMaxSize()
-                )
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "右上の画像",
-                    modifier = Modifier.weight(1f).fillMaxSize()
-                )
-                */
             }
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -79,67 +81,68 @@ fun AssemblyThumbnail(
             ) {
                 AsyncImage(
                     model = if (max > 3) assemblies[3].deviceImgUrl else null,
-                    modifier = Modifier.weight(1f).fillMaxSize(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize(),
                     contentDescription = "左下の画像"
                 )
                 AsyncImage(
                     model = if (max > 4) assemblies[4].deviceImgUrl else null,
-                    modifier = Modifier.weight(1f).fillMaxSize(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize(),
                     contentDescription = "中下の画像"
                 )
                 AsyncImage(
                     model = if (max > 5) assemblies[5].deviceImgUrl else null,
-                    modifier = Modifier.weight(1f).fillMaxSize(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize(),
                     contentDescription = "右下の画像"
                 )
-                /*
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "左下の画像",
-                    modifier = Modifier.weight(1f).fillMaxSize()
-                )
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "中下の画像",
-                    modifier = Modifier.weight(1f).fillMaxSize()
-                )
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "右下の画像",
-                    modifier = Modifier.weight(1f).fillMaxSize()
-                )
-                */
             }
         }
         Column(
             modifier = Modifier
                 .fillMaxSize()
         ){
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (max > 0) assemblies[0].assemblyName else "",
-                    textAlign = TextAlign.Center,
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color.Gray,
-                    maxLines = 3,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-                Text(
-                    text = "総額 ¥ ${"%,d".format(assemblies.sumOf { it.devicePriceRecent })}",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontStyle = FontStyle.Italic,
-                    color = Color.Gray,
-                    maxLines = 1,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(30.dp)
-                )
-            }
+            OverlayText(assemblies)
         }
+    }
+}
+
+@Composable
+fun OverlayText(assemblies: List<Assembly>) {
+    val max = assemblies.size
+    val isNoPrice = assemblies.any { it.devicePriceRecent == 0 }
+    Box(
+        modifier = Modifier.fillMaxSize().background(Color.White.copy(alpha = 0.5f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = if (max > 0) assemblies[0].assemblyName else "",
+            textAlign = TextAlign.Center,
+            fontSize = 36.sp,
+            fontWeight = FontWeight.ExtraBold,
+            style = TextStyle(shadow = Shadow(
+                color = Color.Gray, blurRadius = 10f)
+            ),
+            maxLines = 3,
+            modifier = Modifier.align(Alignment.Center)
+        )
+        Text(
+            text = "総額 ¥ ${"%,d".format(assemblies.sumOf { it.devicePriceRecent })}"
+                + if (isNoPrice) "(+α)" else "",
+            fontSize = 32.sp,
+            fontWeight = FontWeight.ExtraBold,
+            fontStyle = FontStyle.Italic,
+            style = TextStyle(shadow = Shadow(
+                color = Color.Gray, blurRadius = 5f)
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(30.dp)
+        )
     }
 }

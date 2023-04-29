@@ -55,6 +55,9 @@ class MainActivity : ComponentActivity() {
                             composable(TopScreen.route) {
                                 TopScreen(navController)
                             }
+                            composable(TopScreen.route + "/{show}") {
+                                TopScreen(navController)
+                            }
                             composable(SelectionScreen.route + "/{id}" + "/{name}" + "/{device}") {
                                 SelectionScreen(navController)
                             }

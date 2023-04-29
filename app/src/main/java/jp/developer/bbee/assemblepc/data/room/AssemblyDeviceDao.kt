@@ -56,6 +56,7 @@ interface AssemblyDeviceDao {
                 Assembly.deviceType,
                 Assembly.deviceName,
                 Assembly.deviceImgUrl,
+                Device.detail AS deviceDetail,
                 Assembly.devicePriceSaved,
                 Device.price AS devicePriceRecent
             FROM Assembly
