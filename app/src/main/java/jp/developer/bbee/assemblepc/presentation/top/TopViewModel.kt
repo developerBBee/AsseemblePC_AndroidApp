@@ -3,6 +3,7 @@ package jp.developer.bbee.assemblepc.presentation.top
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,11 +14,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TopViewModel @Inject constructor(
-    private val getAllAssemblyUseCase: GetAllAssemblyUseCase
-) : ViewModel() {
+    private val getAllAssemblyUseCase: GetAllAssemblyUseCase,
+    // navigate()のrouteパラメータを受け取るためのSavedStateHandle
+    savedStateHandle: SavedStateHandle
+    ) : ViewModel() {
+    val showDialogState = mutableStateOf(false)
     var allAssemblyList: List<MutableList<Assembly>> by mutableStateOf(listOf())
 
     init {
+        savedStateHandle.get<String>("show")?.let {
+            showDialogState.value = true
+        }
         getAllAssembly()
     }
     private fun getAllAssembly() {

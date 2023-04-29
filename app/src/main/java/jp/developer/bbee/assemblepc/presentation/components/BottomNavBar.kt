@@ -33,8 +33,11 @@ fun BottomNavBar(
                 selected = currentRoute?.contains(screenRoute.route) == true,
                 onClick = {
                     if (currentRoute?.contains(screenRoute.route) == true) return@BottomNavigationItem
-                    // TODO デバイスID未設定の場合、AddAssemblyDialogを呼ぶようにしたい。現状は無効としている。
-                    if (currentRoute == TopScreen.route) return@BottomNavigationItem
+                    // TODO: 暫定対応　画面再描画になってしまうので検討が必要
+                    if (currentRoute?.contains(TopScreen.route) == true) {
+                        navController.navigate(TopScreen.route + "/show")
+                        return@BottomNavigationItem
+                    }
 
                     val id = backStackEntry?.arguments?.getString("id")
                     val name = backStackEntry?.arguments?.getString("name")

@@ -8,8 +8,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +25,7 @@ fun TopScreen(
     navController: NavController,
     topViewModel: TopViewModel = hiltViewModel()
 ) {
-    val showDialogState = remember { mutableStateOf(false) }
+    //val showDialogState = remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -57,7 +55,7 @@ fun TopScreen(
             }
         }
         Button(
-            onClick = { showDialogState.value = true },
+            onClick = { topViewModel.showDialogState.value = true },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFFe0ffff)
             ),
@@ -74,7 +72,7 @@ fun TopScreen(
             )
         }
     }
-    if (showDialogState.value) {
-        CreateAssemblyDialog(navController, showDialogState)
+    if (topViewModel.showDialogState.value) {
+        CreateAssemblyDialog(navController, topViewModel.showDialogState)
     }
 }
