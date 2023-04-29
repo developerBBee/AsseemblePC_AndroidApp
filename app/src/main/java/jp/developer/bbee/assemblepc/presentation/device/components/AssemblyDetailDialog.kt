@@ -45,7 +45,8 @@ fun AssemblyDetailDialog(
                                 .width(100.dp)
                         )
                         Text(
-                            text = "¥ ${assembly.devicePriceRecent}",
+                            text = if(assembly.devicePriceRecent == 0) "価格情報なし"
+                                else "¥ ${assembly.devicePriceRecent}",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )

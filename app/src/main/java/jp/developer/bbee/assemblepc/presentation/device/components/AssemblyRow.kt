@@ -69,7 +69,7 @@ fun AssemblyRow(
                     softWrap = true,
                 )
                 Text(
-                    text = "¥ ${assembly.devicePriceRecent}",
+                    text = if(assembly.devicePriceRecent == 0) "価格情報なし" else "¥ ${assembly.devicePriceRecent}",
                     modifier = Modifier.padding(10.dp),
                     color = Color.Black,
                     fontSize = 16.sp,

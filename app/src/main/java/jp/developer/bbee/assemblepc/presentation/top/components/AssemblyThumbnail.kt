@@ -114,6 +114,7 @@ fun ThumbnailContents(
 @Composable
 fun OverlayText(assemblies: List<Assembly>) {
     val max = assemblies.size
+    val isNoPrice = assemblies.any { it.devicePriceRecent == 0 }
     Box(
         modifier = Modifier.fillMaxSize().background(Color.White.copy(alpha = 0.5f)),
         contentAlignment = Alignment.Center
@@ -124,16 +125,20 @@ fun OverlayText(assemblies: List<Assembly>) {
             fontSize = 36.sp,
             fontWeight = FontWeight.ExtraBold,
             style = TextStyle(shadow = Shadow(
-                color = Color.LightGray, blurRadius = 200f)
+                color = Color.Gray, blurRadius = 10f)
             ),
             maxLines = 3,
             modifier = Modifier.align(Alignment.Center)
         )
         Text(
-            text = "総額 ¥ ${"%,d".format(assemblies.sumOf { it.devicePriceRecent })}",
+            text = "総額 ¥ ${"%,d".format(assemblies.sumOf { it.devicePriceRecent })}"
+                + if (isNoPrice) "(+α)" else "",
             fontSize = 32.sp,
             fontWeight = FontWeight.ExtraBold,
             fontStyle = FontStyle.Italic,
+            style = TextStyle(shadow = Shadow(
+                color = Color.Gray, blurRadius = 5f)
+            ),
             maxLines = 1,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
