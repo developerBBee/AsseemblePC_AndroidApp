@@ -100,7 +100,10 @@ fun AssemblyRow(
             Column (
                 modifier = Modifier
                     .width(300.dp).height(300.dp)
-                    .background(Color.White),
+                    .background(
+                        shape = RoundedCornerShape(10.dp),
+                        color = Color.White
+                    ),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

@@ -1,6 +1,7 @@
 package jp.developer.bbee.assemblepc.presentation.device.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -23,6 +24,7 @@ fun AddAssemblyDialog(
     val device = assemblyViewModel.selectedDevice
     AlertDialog(
         onDismissRequest = { assemblyViewModel.isShowDialog = false },
+        shape = RoundedCornerShape(10.dp),
         title = {
             Text(
                 text = "構成に追加しますか？",
