@@ -62,7 +62,6 @@ fun TopScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(vertical = 10.dp)
         ) {
             Text(
                 text = "構成を新規作成",

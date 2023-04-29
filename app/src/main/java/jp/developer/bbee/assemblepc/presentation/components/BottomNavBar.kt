@@ -1,11 +1,10 @@
 package jp.developer.bbee.assemblepc.presentation.components
 
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import android.os.Bundle
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -31,24 +30,41 @@ fun BottomNavBar(
                 },
                 label = { Text(text = stringResource(id = screenRoute.resourceId)) },
                 selected = currentRoute?.contains(screenRoute.route) == true,
+                // TopScreenの場合は他のアイコン色を黒にする
+                unselectedContentColor = if (currentRoute?.contains(TopScreen.route) == true)
+                    Color.Black else LocalContentColor.current.copy(alpha = ContentAlpha.medium),
                 onClick = {
-                    if (currentRoute?.contains(screenRoute.route) == true) return@BottomNavigationItem
-                    // TODO: 暫定対応　画面再描画になってしまうので検討が必要
-                    if (currentRoute?.contains(TopScreen.route) == true) {
-                        navController.navigate(TopScreen.route + "/show")
-                        return@BottomNavigationItem
-                    }
-
-                    val id = backStackEntry?.arguments?.getString("id")
-                    val name = backStackEntry?.arguments?.getString("name")
-                    val device = backStackEntry?.arguments?.getString("device")
-                    if (screenRoute == TopScreen) {
-                        navController.navigate(screenRoute.route)
-                    } else {
-                        navController.navigate(screenRoute.route + "/$id" + "/$name" + "/$device")
+                    currentRoute?.let { currentRoute ->
+                        // 現在の画面のルートと異なる場合のみ遷移する
+                        if (!currentRoute.contains(screenRoute.route)) {
+                            val arguments = backStackEntry?.arguments
+                            onClickNavigate(navController, screenRoute, currentRoute, arguments)
+                        }
                     }
                 }
             )
         }
+    }
+}
+
+fun onClickNavigate(
+    navController: NavController,
+    screenRoute: ScreenRoute,
+    currentRoute: String,
+    arguments: Bundle?
+) {
+    // TODO: 暫定対応　画面再描画になってしまうので検討が必要
+    if (currentRoute.contains(TopScreen.route)) {
+        navController.navigate(TopScreen.route + "/show")
+        return
+    }
+
+    val id = arguments?.getString("id")
+    val name = arguments?.getString("name")
+    val device = arguments?.getString("device")
+    if (screenRoute == TopScreen) {
+        navController.navigate(screenRoute.route)
+    } else {
+        navController.navigate(screenRoute.route + "/$id" + "/$name" + "/$device")
     }
 }
