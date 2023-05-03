@@ -64,12 +64,142 @@ class DeviceViewModel @Inject constructor(
     }
 
     private fun filterDeviceList(text: String) {
+        val searchList = createSearchList(text)
+
         deviceBuffer[currentDeviceType]?.let { bufferList ->
             _state.value = DeviceState(
                 devices = bufferList.filter { device ->
-                    device.name.contains(text) || device.detail.contains(text)
+                    searchList.all { search ->
+                        device.name.uppercase().contains(search.uppercase())
+                                || device.detail.uppercase().contains(search.uppercase())
+                    }
                 }
             )
         }
     }
+
+    private fun createSearchList(searchText: String): List<String> {
+        return searchText
+            .trim()
+            .replace("　", " ")
+            .split("\\s+".toRegex())
+            .map { convertToFullWidthKatakana(it) }
+    }
+
+    private fun convertToFullWidthKatakana(input: String): String {
+        val sb = StringBuilder()
+        for (i in input.indices) {
+            val c1 = input[i]
+            if (c1 == 'ﾞ' || c1 == 'ﾟ') continue // 濁音、半濁音はskip
+
+            if (i < input.length -1) {
+                val c2 = input[i+1]
+                val str = c1.toString() + c2.toString()
+                if ((c2 == 'ﾞ' || c2 == 'ﾟ') && kanaMap.keys.contains(str)) {
+                    sb.append(kanaHalfToFullMapping(str))
+                } else {
+                    sb.append(kanaHalfToFullMapping(c1.toString()))
+                }
+            } else {
+                sb.append(kanaHalfToFullMapping(c1.toString()))
+            }
+        }
+        return sb.toString()
+    }
+
+    private fun kanaHalfToFullMapping(input: String): String {
+        return kanaMap[input] ?: input
+    }
+
+    val kanaMap = mapOf(
+        "ｱ" to "ア",
+        "ｲ" to "イ",
+        "ｳ" to "ウ",
+        "ｴ" to "エ",
+        "ｵ" to "オ",
+        "ｶ" to "カ",
+        "ｷ" to "キ",
+        "ｸ" to "ク",
+        "ｹ" to "ケ",
+        "ｺ" to "コ",
+        "ｻ" to "サ",
+        "ｼ" to "シ",
+        "ｽ" to "ス",
+        "ｾ" to "セ",
+        "ｿ" to "ソ",
+        "ﾀ" to "タ",
+        "ﾁ" to "チ",
+        "ﾂ" to "ツ",
+        "ﾃ" to "テ",
+        "ﾄ" to "ト",
+        "ﾅ" to "ナ",
+        "ﾆ" to "ニ",
+        "ﾇ" to "ヌ",
+        "ﾈ" to "ネ",
+        "ﾉ" to "ノ",
+        "ﾊ" to "ハ",
+        "ﾋ" to "ヒ",
+        "ﾌ" to "フ",
+        "ﾍ" to "ヘ",
+        "ﾎ" to "ホ",
+        "ﾏ" to "マ",
+        "ﾐ" to "ミ",
+        "ﾑ" to "ム",
+        "ﾒ" to "メ",
+        "ﾓ" to "モ",
+        "ﾔ" to "ヤ",
+        "ﾕ" to "ユ",
+        "ﾖ" to "ヨ",
+        "ﾗ" to "ラ",
+        "ﾘ" to "リ",
+        "ﾙ" to "ル",
+        "ﾚ" to "レ",
+        "ﾛ" to "ロ",
+        "ﾜ" to "ワ",
+        "ｦ" to "ヲ",
+        "ﾝ" to "ン",
+        "ｧ" to "ァ",
+        "ｨ" to "ィ",
+        "ｩ" to "ゥ",
+        "ｪ" to "ェ",
+        "ｫ" to "ォ",
+        "ｬ" to "ャ",
+        "ｭ" to "ュ",
+        "ｮ" to "ョ",
+        "ｯ" to "ッ",
+        "ｰ" to "ー",
+        "｡" to "。",
+        "｢" to "「",
+        "｣" to "」",
+        "､" to "、",
+        "･" to "・",
+        "ｶﾞ" to "ガ",
+        "ｷﾞ" to "ギ",
+        "ｸﾞ" to "グ",
+        "ｹﾞ" to "ゲ",
+        "ｺﾞ" to "ゴ",
+        "ｻﾞ" to "ザ",
+        "ｼﾞ" to "ジ",
+        "ｽﾞ" to "ズ",
+        "ｾﾞ" to "ゼ",
+        "ｿﾞ" to "ゾ",
+        "ﾀﾞ" to "ダ",
+        "ﾁﾞ" to "ヂ",
+        "ﾂﾞ" to "ヅ",
+        "ﾃﾞ" to "デ",
+        "ﾄﾞ" to "ド",
+        "ﾊﾞ" to "バ",
+        "ﾋﾞ" to "ビ",
+        "ﾌﾞ" to "ブ",
+        "ﾍﾞ" to "ベ",
+        "ﾎﾞ" to "ボ",
+        "ﾊﾟ" to "パ",
+        "ﾋﾟ" to "ピ",
+        "ﾌﾟ" to "プ",
+        "ﾍﾟ" to "ペ",
+        "ﾎﾟ" to "ポ",
+        "ｳﾞ" to "ヴ",
+        "ﾜﾞ" to "ヷ",
+        "ｦﾞ" to "ヺ",
+    )
 }
