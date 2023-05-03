@@ -1,6 +1,8 @@
 package jp.developer.bbee.assemblepc.presentation.device.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -20,7 +22,7 @@ fun DeviceSearchText(
     deviceViewModel: DeviceViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
-    Row(
+    Box(
         Modifier.height(60.dp)) {
         OutlinedTextField(
             modifier = Modifier.fillMaxSize(),
@@ -42,5 +44,6 @@ fun DeviceSearchText(
                 focusManager.clearFocus()
             })
         )
+        SortMenu()
     }
 }
