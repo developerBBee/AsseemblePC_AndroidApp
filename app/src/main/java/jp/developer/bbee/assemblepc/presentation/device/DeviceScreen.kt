@@ -23,7 +23,9 @@ fun DeviceScreen(
     val state = deviceViewModel.state.value
     Column(modifier = Modifier.fillMaxSize()) {
         AssemblyInfo()
-        LazyColumn(modifier = Modifier.weight(1f).fillMaxWidth()) {
+        LazyColumn(modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth()) {
             items(state.devices) { device ->
                 DeviceRow(device = device) {
                     assemblyViewModel.selectedDevice = it
