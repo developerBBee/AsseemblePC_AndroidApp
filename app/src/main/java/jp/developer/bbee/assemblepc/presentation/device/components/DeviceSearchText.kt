@@ -8,20 +8,18 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import jp.developer.bbee.assemblepc.presentation.device.DeviceViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DeviceSearchText(
     deviceViewModel: DeviceViewModel = hiltViewModel()
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     Row(
         Modifier.height(60.dp)) {
         OutlinedTextField(
@@ -40,8 +38,8 @@ fun DeviceSearchText(
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = {
-                // Enterで実行でソフトウェアキーボードを隠す
-                keyboardController?.hide()
+                // Enterで実行でFocusを外してソフトウェアキーボードを隠す
+                focusManager.clearFocus()
             })
         )
     }
