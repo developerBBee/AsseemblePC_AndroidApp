@@ -10,20 +10,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import jp.developer.bbee.assemblepc.presentation.device.components.SortType.*
+import androidx.hilt.navigation.compose.hiltViewModel
+import jp.developer.bbee.assemblepc.presentation.device.DeviceViewModel
 
 @Preview
 @Composable
-fun SortMenu() {
+fun SortMenu(
+    deviceViewModel: DeviceViewModel = hiltViewModel()
+) {
     var isExpanded by remember { mutableStateOf(false) }
-    var selected by remember { mutableStateOf(POPULARITY) }
-
-    val sortTypes = listOf(
-        POPULARITY,
-        NEW_ARRIVAL,
-        PRICE_DESC,
-        PRICE_ASC,
-    )
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomEnd
@@ -33,7 +28,9 @@ fun SortMenu() {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "ソートメニューボタン",
-                modifier = Modifier.fillMaxHeight().padding(start = 5.dp, end = 5.dp, top = 8.dp)
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(start = 5.dp, end = 5.dp, top = 8.dp)
             )
         }
 
@@ -42,22 +39,26 @@ fun SortMenu() {
                 expanded = isExpanded,
                 onDismissRequest = { isExpanded = false },
             ) {
-                sortTypes.forEach { sortType ->
+                for(sortType: SortType in SortType.values()) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween) {
                         DropdownMenuItem(
                             onClick = {
                                 isExpanded = false
-                                selected = sortType
+                                deviceViewModel.onDeviceSortChanged(sortType)
                             }
                         ) {
-                            if (selected == sortType) {
+                            if (deviceViewModel.currentDeviceSort == sortType) {
                                 Icon(
                                     imageVector = Icons.Default.Check,
                                     contentDescription = "選択アイコン",
-                                    modifier = Modifier.width(24.dp).padding(end = 2.dp)
+                                    modifier = Modifier
+                                        .width(24.dp)
+                                        .padding(end = 2.dp)
                                 )
                             } else {
-                                Spacer(modifier = Modifier.width(24.dp).padding(end = 2.dp))
+                                Spacer(modifier = Modifier
+                                    .width(24.dp)
+                                    .padding(end = 2.dp))
                             }
                             Text(text = sortType.sortName)
                         }
