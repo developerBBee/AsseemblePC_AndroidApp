@@ -4,4 +4,6 @@
     <string name="selection_screen">SELECT</string>
     <string name="device_screen">DEVICE</string>
     <string name="assembly_screen">ASSEMBLY</string>
+
+    <string name="network_err_msg">インターネットに接続されていることを確認し、通信状態が良い状態でリトライしてください。</string>
 </resources>
