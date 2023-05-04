@@ -10,6 +10,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.developer.bbee.assemblepc.common.NetworkResponse
 import jp.developer.bbee.assemblepc.domain.model.Device
 import jp.developer.bbee.assemblepc.domain.use_case.GetDeviceUseCase
+import jp.developer.bbee.assemblepc.presentation.device.components.SortType
+import jp.developer.bbee.assemblepc.presentation.device.components.SortType.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -28,6 +30,7 @@ class DeviceViewModel @Inject constructor(
     var searchText = mutableStateOf("")
     private var currentDeviceType: String? = null
     private var deviceBuffer = mutableMapOf<String, List<Device>>()
+    var currentDeviceSort: SortType = POPULARITY
 
     init {
         savedStateHandle.get<String>("device")?.let {
@@ -58,6 +61,11 @@ class DeviceViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun onDeviceSortChanged(sort: SortType) {
+        currentDeviceSort = sort
+        filterDeviceList(searchText.value)
+    }
+
     fun setSearchText(text: String) {
         searchText.value = text
         filterDeviceList(text)
@@ -68,7 +76,13 @@ class DeviceViewModel @Inject constructor(
 
         deviceBuffer[currentDeviceType]?.let { bufferList ->
             _state.value = DeviceState(
-                devices = bufferList.filter { device ->
+                devices =
+                when (currentDeviceSort) {
+                    POPULARITY -> bufferList.sortedBy { if(it.rank > 0) it.rank else Int.MAX_VALUE }
+                    NEW_ARRIVAL -> bufferList.sortedByDescending { it.releasedate }
+                    PRICE_ASC -> bufferList.sortedBy { if(it.price > 0) it.price else Int.MAX_VALUE }
+                    PRICE_DESC -> bufferList.sortedByDescending { if(it.price > 0) it.price else 0 }
+                }.filter { device ->
                     searchList.all { search ->
                         device.name.uppercase().contains(search.uppercase())
                                 || device.detail.uppercase().contains(search.uppercase())
