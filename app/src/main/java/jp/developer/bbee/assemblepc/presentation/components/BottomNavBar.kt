@@ -4,12 +4,12 @@ import android.os.Bundle
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.TopScreen
+import jp.developer.bbee.assemblepc.presentation.ui.theme.Purple700
 
 @Composable
 fun BottomNavBar(
@@ -32,7 +32,7 @@ fun BottomNavBar(
                 selected = currentRoute?.contains(screenRoute.route) == true,
                 // TopScreenの場合は他のアイコン色を黒にする
                 unselectedContentColor = if (currentRoute?.contains(TopScreen.route) == true)
-                    Color.Black else LocalContentColor.current.copy(alpha = ContentAlpha.medium),
+                    Purple700 else LocalContentColor.current.copy(alpha = ContentAlpha.medium),
                 onClick = {
                     currentRoute?.let { currentRoute ->
                         // 現在の画面のルートと異なる場合のみ遷移する
