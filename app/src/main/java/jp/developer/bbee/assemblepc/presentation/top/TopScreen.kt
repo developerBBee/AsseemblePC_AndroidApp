@@ -16,41 +16,43 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import jp.developer.bbee.assemblepc.presentation.ScreenRoute
 import jp.developer.bbee.assemblepc.presentation.top.components.AssemblyThumbnail
 import jp.developer.bbee.assemblepc.presentation.top.components.CreateAssemblyDialog
+import jp.developer.bbee.assemblepc.presentation.top.components.DeleteAssemblyConfirmDialog
+import jp.developer.bbee.assemblepc.presentation.top.components.EditAssemblyDialog
 
 @Composable
 fun TopScreen(
     navController: NavController,
     topViewModel: TopViewModel = hiltViewModel()
 ) {
-    //val showDialogState = remember { mutableStateOf(false) }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Temporary code
+        val allList = topViewModel.allAssemblyMap.values.toList()
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(topViewModel.allAssemblyList) {
+            items(allList) {
                 AssemblyThumbnail(
                     assemblies = it,
                     onClick = {
+                        /*
                         navController.navigate(
                             ScreenRoute.AssemblyScreen.route
                                     + "/${it[0].assemblyId}"
                                     + "/${it[0].assemblyName}"
                                     + "/pccase"
                         )
+                         */
+                        topViewModel.selectedAssemblyId = it[0].assemblyId
                     }
                 )
             }
-            if (topViewModel.allAssemblyList.size > 2) {
+            if (allList.size > 2) {
                 item { Spacer(modifier = Modifier.height(50.dp)) }
             }
         }
@@ -73,5 +75,11 @@ fun TopScreen(
     }
     if (topViewModel.showDialogState.value) {
         CreateAssemblyDialog(navController, topViewModel.showDialogState)
+    } else if (topViewModel.selectedAssemblyId != null) {
+        if (topViewModel.deleteConfirm) {
+            DeleteAssemblyConfirmDialog(topViewModel)
+        } else {
+            EditAssemblyDialog(navController, topViewModel)
+        }
     }
 }

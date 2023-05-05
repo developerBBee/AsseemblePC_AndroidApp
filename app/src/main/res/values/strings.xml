@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">AssemblePC</string>
-    <string name="top_screen">TOP</string>
-    <string name="selection_screen">SELECT</string>
-    <string name="device_screen">DEVICE</string>
-    <string name="assembly_screen">ASSEMBLY</string>
+    <string name="top_screen">ホーム</string>
+    <string name="selection_screen">パーツ種類</string>
+    <string name="device_screen">アイテム選択</string>
+    <string name="assembly_screen">構成</string>
 
     <string name="network_err_msg">インターネットに接続されていることを確認し、通信状態が良い状態でリトライしてください。</string>
 </resources>
