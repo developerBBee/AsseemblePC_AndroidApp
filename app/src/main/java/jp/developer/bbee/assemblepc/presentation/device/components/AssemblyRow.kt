@@ -29,6 +29,16 @@ val deviceTextConvert = mapOf(
     "ssd" to "SSD",
     "hdd35inch" to "HDD",
     "videocard" to "グラフィックボード",
+    "ossoft" to "OS",
+    "lcdmonitor" to "ディスプレイ",
+    "keyboard" to "キーボード",
+    "mouse" to "マウス",
+    "dvddrive" to "DVDドライブ",
+    "bluraydrive" to "BDドライブ",
+    "soundcard" to "サウンドカード",
+    "pcspeaker" to "スピーカー",
+    "fancontroller" to "ファンコントローラー",
+    "casefan" to "ファン"
 )
 
 @Composable

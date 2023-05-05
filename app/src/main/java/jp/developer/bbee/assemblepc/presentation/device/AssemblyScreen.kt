@@ -42,6 +42,16 @@ val sortList = mapOf(
     "ssd" to 7,
     "hdd35inch" to 8,
     "videocard" to 9,
+    "ossoft" to 10,
+    "lcdmonitor" to 11,
+    "keyboard" to 12,
+    "mouse" to 13,
+    "dvddrive" to 14,
+    "bluraydrive" to 15,
+    "soundcard" to 16,
+    "pcspeaker" to 17,
+    "fancontroller" to 18,
+    "casefan" to 19
 )
 fun assemblySort(assembly: List<Assembly>): List<Assembly> {
     return assembly.sortedByDescending { -sortList.getOrDefault(it.deviceType, 0) }
