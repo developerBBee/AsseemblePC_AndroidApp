@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.developer.bbee.assemblepc.domain.model.Assembly
+import jp.developer.bbee.assemblepc.domain.use_case.DeleteAssemblyUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetAllAssemblyUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TopViewModel @Inject constructor(
     private val getAllAssemblyUseCase: GetAllAssemblyUseCase,
+    private val deleteAssemblyUseCase: DeleteAssemblyUseCase,
     // navigate()のrouteパラメータを受け取るためのSavedStateHandle
     savedStateHandle: SavedStateHandle
     ) : ViewModel() {
@@ -33,6 +35,12 @@ class TopViewModel @Inject constructor(
             val allAssembly = getAllAssemblyUseCase()
             // assemblyIdごとにAssemblyをまとめる
             allAssemblyMap = allAssembly.groupBy { it.assemblyId }
+        }
+    }
+    fun deleteAssembly(assemblyId: Int) {
+        viewModelScope.launch {
+            deleteAssemblyUseCase(assemblyId)
+            getAllAssembly()
         }
     }
 }

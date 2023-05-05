@@ -77,6 +77,10 @@ class DeviceRepositoryImpl @Inject constructor(
         assemblyDeviceDao.deleteAssembly(assembly)
     }
 
+    override suspend fun deleteAssemblyById(assemblyId: Int) {
+        assemblyDeviceDao.deleteAssemblyById(assemblyId)
+    }
+
     override suspend fun existDeviceUpdate(device: String): Int {
         return assemblyDeviceDao.existDeviceUpdate(device)
     }

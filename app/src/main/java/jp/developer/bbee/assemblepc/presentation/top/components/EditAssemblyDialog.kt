@@ -87,7 +87,7 @@ fun EditAssemblyDialog(
                     Button(
                         onClick = {
                             topViewModel.selectedAssemblyId = null
-                            /*TODO*/
+                            topViewModel.deleteAssembly(selectedId)
                         }
                     ) {
                         Text(text = "構成を削除")
