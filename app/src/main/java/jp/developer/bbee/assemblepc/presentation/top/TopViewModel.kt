@@ -19,7 +19,8 @@ class TopViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
     ) : ViewModel() {
     val showDialogState = mutableStateOf(false)
-    var allAssemblyList: List<MutableList<Assembly>> by mutableStateOf(listOf())
+    var selectedAssemblyId by mutableStateOf<Int?>(null)
+    var allAssemblyMap: Map<Int, List<Assembly>> by mutableStateOf(mapOf())
 
     init {
         savedStateHandle.get<String>("show")?.let {
@@ -30,14 +31,8 @@ class TopViewModel @Inject constructor(
     private fun getAllAssembly() {
         viewModelScope.launch {
             val allAssembly = getAllAssemblyUseCase()
-            val allAssemblyMap = mutableMapOf<Int, MutableList<Assembly>>()
-            allAssembly.forEach { assembly ->
-                val assemblyId = assembly.assemblyId
-                val assemblyList = allAssemblyMap.getOrDefault(assemblyId, mutableListOf())
-                assemblyList.add(assembly)
-                allAssemblyMap[assemblyId] = assemblyList
-            }
-            allAssemblyList = allAssemblyMap.values.toList()
+            // assemblyIdごとにAssemblyをまとめる
+            allAssemblyMap = allAssembly.groupBy { it.assemblyId }
         }
     }
 }
