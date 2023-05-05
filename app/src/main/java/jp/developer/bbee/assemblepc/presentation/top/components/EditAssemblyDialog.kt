@@ -25,12 +25,14 @@ fun EditAssemblyDialog(
     val selectedId = topViewModel.selectedAssemblyId ?: return
     val selectedList = topViewModel.allAssemblyMap[selectedId] ?: return
     val selectedName = selectedList[0].assemblyName
+    val name = if (selectedName == "") "構成名なし" else selectedName
+    val navPath = "/${selectedId}/${name}/pccase"
 
     var assemblyName by remember { mutableStateOf(selectedName) }
     var changeNameButtonEnable by remember { mutableStateOf(false) }
     AlertDialog(
         shape = RoundedCornerShape(10.dp),
-        onDismissRequest = { topViewModel.selectedAssemblyId = null },
+        onDismissRequest = { topViewModel.closeEditDialog() },
         title = {
             Column {
                 Text(
@@ -86,14 +88,13 @@ fun EditAssemblyDialog(
                 Column {
                     Button(
                         onClick = {
-                            topViewModel.selectedAssemblyId = null
-                            topViewModel.deleteAssembly(selectedId)
+                            topViewModel.deleteConfirm = true
                         }
                     ) {
                         Text(text = "構成を削除")
                     }
                     Button(
-                        onClick = { topViewModel.selectedAssemblyId = null }
+                        onClick = { topViewModel.closeEditDialog() }
                     ) {
                         Text(text = "キャンセル")
                     }
@@ -103,9 +104,8 @@ fun EditAssemblyDialog(
                     Button(
                         modifier = Modifier.align(Alignment.End),
                         onClick = {
-                            topViewModel.selectedAssemblyId = null
-                            val name = if (assemblyName == "") "構成名なし" else assemblyName
-                            navController.navigate(SelectionScreen.route + "/0" + "/$name" + "/${null}")
+                            topViewModel.closeEditDialog()
+                            navController.navigate(SelectionScreen.route + navPath)
                         }
                     ) {
                         Text(text = "パーツを追加")
@@ -113,14 +113,8 @@ fun EditAssemblyDialog(
                     Button(
                         modifier = Modifier.align(Alignment.End),
                         onClick = {
-                            topViewModel.selectedAssemblyId = null
-                            val name = if (assemblyName == "") "構成名なし" else assemblyName
-                            navController.navigate(
-                                SelectionScreen.route + "/0" + "/$name" + "/pccase"
-                            )
-                            navController.navigate(
-                                AssemblyScreen.route + "/${selectedId}" + "/${selectedName}" + "/pccase"
-                            )
+                            topViewModel.closeEditDialog()
+                            navController.navigate(AssemblyScreen.route + navPath)
                         }
                     ) {
                         Text(text = "構成確認")

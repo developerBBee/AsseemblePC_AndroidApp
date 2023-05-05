@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import jp.developer.bbee.assemblepc.presentation.top.components.AssemblyThumbnail
 import jp.developer.bbee.assemblepc.presentation.top.components.CreateAssemblyDialog
+import jp.developer.bbee.assemblepc.presentation.top.components.DeleteAssemblyConfirmDialog
 import jp.developer.bbee.assemblepc.presentation.top.components.EditAssemblyDialog
 
 @Composable
@@ -75,6 +76,10 @@ fun TopScreen(
     if (topViewModel.showDialogState.value) {
         CreateAssemblyDialog(navController, topViewModel.showDialogState)
     } else if (topViewModel.selectedAssemblyId != null) {
-        EditAssemblyDialog(navController, topViewModel)
+        if (topViewModel.deleteConfirm) {
+            DeleteAssemblyConfirmDialog(topViewModel)
+        } else {
+            EditAssemblyDialog(navController, topViewModel)
+        }
     }
 }
