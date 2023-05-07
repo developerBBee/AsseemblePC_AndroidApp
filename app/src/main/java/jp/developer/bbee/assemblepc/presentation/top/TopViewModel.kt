@@ -23,7 +23,8 @@ class TopViewModel @Inject constructor(
     // navigate()のrouteパラメータを受け取るためのSavedStateHandle
     savedStateHandle: SavedStateHandle
     ) : ViewModel() {
-    val showDialogState = mutableStateOf(false)
+    var showCreateDialog by mutableStateOf(false)
+    var createAssemblyName by mutableStateOf("")
     var selectedAssemblyId by mutableStateOf<Int?>(null)
     var deleteConfirm by mutableStateOf(false)
     var renameStr by mutableStateOf("")
@@ -32,7 +33,7 @@ class TopViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<String>("show")?.let {
-            showDialogState.value = true
+            showCreateDialog = true
         }
         getAllAssembly()
     }

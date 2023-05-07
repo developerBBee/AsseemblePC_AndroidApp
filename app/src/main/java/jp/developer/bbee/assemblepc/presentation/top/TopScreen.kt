@@ -46,7 +46,7 @@ fun TopScreen(
             }
         }
         Button(
-            onClick = { topViewModel.showDialogState.value = true },
+            onClick = { topViewModel.showCreateDialog = true },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFFe0ffff)
             ),
@@ -62,8 +62,8 @@ fun TopScreen(
             )
         }
     }
-    if (topViewModel.showDialogState.value) {
-        CreateAssemblyDialog(navController, topViewModel.showDialogState)
+    if (topViewModel.showCreateDialog) {
+        CreateAssemblyDialog(navController, topViewModel)
     } else if (topViewModel.selectedAssemblyId != null) {
         if (topViewModel.deleteConfirm) {
             DeleteAssemblyConfirmDialog(topViewModel)
