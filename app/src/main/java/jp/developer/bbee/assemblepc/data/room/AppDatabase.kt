@@ -12,8 +12,7 @@ import jp.developer.bbee.assemblepc.domain.model.DeviceUpdate
  * または、データベースがまだ新しいバージョン番号でコンパイルされていない場合、自動移行は失敗します。
  */
 @Database(
-    entities = [Device::class, Assembly::class, DeviceUpdate::class],
-    version = 1, exportSchema = false
+    entities = [Device::class, Assembly::class, DeviceUpdate::class], version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getAssemblyDeviceDao(): AssemblyDeviceDao

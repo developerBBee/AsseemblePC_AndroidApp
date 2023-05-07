@@ -14,6 +14,7 @@ interface DeviceRepository {
     suspend fun loadMaxAssemblyId(): Int?
     suspend fun deleteAssembly(assembly: Assembly)
     suspend fun deleteAssemblyById(assemblyId: Int)
+    suspend fun renameAssemblyById(assemblyName: String, assemblyId: Int)
 
     suspend fun existDeviceUpdate(device: String): Int
     suspend fun loadDeviceUpdate(device: String): List<DeviceUpdate>

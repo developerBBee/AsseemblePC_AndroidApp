@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.developer.bbee.assemblepc.domain.model.Assembly
 import jp.developer.bbee.assemblepc.domain.use_case.DeleteAssemblyUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetAllAssemblyUseCase
+import jp.developer.bbee.assemblepc.domain.use_case.RenameAssemblyUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,17 +19,21 @@ import javax.inject.Inject
 class TopViewModel @Inject constructor(
     private val getAllAssemblyUseCase: GetAllAssemblyUseCase,
     private val deleteAssemblyUseCase: DeleteAssemblyUseCase,
+    private val renameAssemblyUseCase: RenameAssemblyUseCase,
     // navigate()のrouteパラメータを受け取るためのSavedStateHandle
     savedStateHandle: SavedStateHandle
     ) : ViewModel() {
-    val showDialogState = mutableStateOf(false)
+    var showCreateDialog by mutableStateOf(false)
+    var createAssemblyName by mutableStateOf("")
     var selectedAssemblyId by mutableStateOf<Int?>(null)
     var deleteConfirm by mutableStateOf(false)
+    var renameStr by mutableStateOf("")
+    var renameConfirm by mutableStateOf(false)
     var allAssemblyMap: Map<Int, List<Assembly>> by mutableStateOf(mapOf())
 
     init {
         savedStateHandle.get<String>("show")?.let {
-            showDialogState.value = true
+            showCreateDialog = true
         }
         getAllAssembly()
     }
@@ -50,5 +55,25 @@ class TopViewModel @Inject constructor(
     fun closeEditDialog() {
         selectedAssemblyId = null
         deleteConfirm = false
+        renameConfirm = false
+    }
+    fun selectAssembly(id: Int) {
+        selectedAssemblyId = id
+        renameStr = allAssemblyMap[id]?.get(0)?.assemblyName ?: ""
+    }
+    fun updateRenameString(str: String) {
+        renameStr = str
+    }
+    fun showRenameConfirm() {
+        renameConfirm = true
+    }
+    fun renameAssembly() {
+        selectedAssemblyId?.let {
+            viewModelScope.launch {
+                renameAssemblyUseCase(renameStr, it)
+                getAllAssembly()
+            }
+        }
+        closeEditDialog()
     }
 }
