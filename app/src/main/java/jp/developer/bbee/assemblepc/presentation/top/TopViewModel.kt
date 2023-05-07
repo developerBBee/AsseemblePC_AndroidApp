@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.developer.bbee.assemblepc.domain.model.Assembly
 import jp.developer.bbee.assemblepc.domain.use_case.DeleteAssemblyUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetAllAssemblyUseCase
+import jp.developer.bbee.assemblepc.domain.use_case.RenameAssemblyUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class TopViewModel @Inject constructor(
     private val getAllAssemblyUseCase: GetAllAssemblyUseCase,
     private val deleteAssemblyUseCase: DeleteAssemblyUseCase,
+    private val renameAssemblyUseCase: RenameAssemblyUseCase,
     // navigate()のrouteパラメータを受け取るためのSavedStateHandle
     savedStateHandle: SavedStateHandle
     ) : ViewModel() {
@@ -63,5 +65,14 @@ class TopViewModel @Inject constructor(
     }
     fun showRenameConfirm() {
         renameConfirm = true
+    }
+    fun renameAssembly() {
+        selectedAssemblyId?.let {
+            viewModelScope.launch {
+                renameAssemblyUseCase(renameStr, it)
+                getAllAssembly()
+            }
+        }
+        closeEditDialog()
     }
 }

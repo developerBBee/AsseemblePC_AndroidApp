@@ -28,7 +28,7 @@ fun EditAssemblyDialog(
     val name = if (selectedName == "") "構成名なし" else selectedName
     val navPath = "/${selectedId}/${name}/pccase"
 
-    val changeNameButtonEnable = topViewModel.renameStr != selectedName || topViewModel.renameStr == ""
+    val changeNameButtonEnable = topViewModel.renameStr != selectedName && topViewModel.renameStr != ""
     AlertDialog(
         shape = RoundedCornerShape(10.dp),
         onDismissRequest = { topViewModel.closeEditDialog() },

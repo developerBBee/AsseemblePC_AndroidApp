@@ -54,8 +54,7 @@ fun RenameAssemblyConfirmDialog(
                 }
                 Button(
                     onClick = {
-                        topViewModel.closeEditDialog()
-                        /*TODO*/
+                        topViewModel.renameAssembly()
                     }
                 ) {
                     Text(text = "確定")
