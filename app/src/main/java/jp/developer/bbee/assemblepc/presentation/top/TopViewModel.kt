@@ -24,6 +24,8 @@ class TopViewModel @Inject constructor(
     val showDialogState = mutableStateOf(false)
     var selectedAssemblyId by mutableStateOf<Int?>(null)
     var deleteConfirm by mutableStateOf(false)
+    var renameStr by mutableStateOf("")
+    var renameConfirm by mutableStateOf(false)
     var allAssemblyMap: Map<Int, List<Assembly>> by mutableStateOf(mapOf())
 
     init {
@@ -50,5 +52,16 @@ class TopViewModel @Inject constructor(
     fun closeEditDialog() {
         selectedAssemblyId = null
         deleteConfirm = false
+        renameConfirm = false
+    }
+    fun selectAssembly(id: Int) {
+        selectedAssemblyId = id
+        renameStr = allAssemblyMap[id]?.get(0)?.assemblyName ?: ""
+    }
+    fun updateRenameString(str: String) {
+        renameStr = str
+    }
+    fun showRenameConfirm() {
+        renameConfirm = true
     }
 }

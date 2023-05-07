@@ -6,7 +6,7 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -28,8 +28,7 @@ fun EditAssemblyDialog(
     val name = if (selectedName == "") "構成名なし" else selectedName
     val navPath = "/${selectedId}/${name}/pccase"
 
-    var assemblyName by remember { mutableStateOf(selectedName) }
-    var changeNameButtonEnable by remember { mutableStateOf(false) }
+    val changeNameButtonEnable = topViewModel.renameStr != selectedName || topViewModel.renameStr == ""
     AlertDialog(
         shape = RoundedCornerShape(10.dp),
         onDismissRequest = { topViewModel.closeEditDialog() },
@@ -53,11 +52,10 @@ fun EditAssemblyDialog(
                     fontWeight = FontWeight.Bold
                 )
                 TextField(
-                    value = assemblyName,
+                    value = topViewModel.renameStr,
                     onValueChange = {
                         if (it.length <= 20) {
-                            assemblyName = it
-                            changeNameButtonEnable = true
+                            topViewModel.updateRenameString(it)
                         } },
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text(text = "構成名称") },
@@ -67,12 +65,9 @@ fun EditAssemblyDialog(
                 Button(
                     modifier = Modifier.align(Alignment.End),
                     enabled = changeNameButtonEnable,
-                    onClick = {
-                        changeNameButtonEnable = false
-                        /*TODO*/
-                    }
+                    onClick = { topViewModel.showRenameConfirm() }
                 ) {
-                    Text(text = "確定")
+                    Text(text = "更新")
                 }
             }
         },
