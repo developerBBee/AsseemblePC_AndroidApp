@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AssemblePC</string>
+    <string name="app_name">自作PC構築</string>
     <string name="top_screen">ホーム</string>
     <string name="selection_screen">パーツ種類</string>
     <string name="device_screen">アイテム選択</string>
