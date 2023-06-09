@@ -9,10 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import jp.developer.bbee.assemblepc.presentation.ScreenRoute.DeviceScreen
 import jp.developer.bbee.assemblepc.presentation.device.AssemblyViewModel
 import jp.developer.bbee.assemblepc.presentation.device.components.AssemblyInfo
-import jp.developer.bbee.assemblepc.presentation.selection.components.ButtonsRow
+import jp.developer.bbee.assemblepc.presentation.selection.components.VariableButtonsRow
 
 val deviceTypes: List<Map<String, String>> = mutableListOf(
     mapOf("text" to "PCケース", "path" to "pccase"),
@@ -42,37 +41,21 @@ fun SelectionScreen(
     assemblyViewModel: AssemblyViewModel = hiltViewModel()
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        AssemblyInfo()
+        AssemblyInfo(
+            assemblyName = assemblyViewModel.selectedAssemblyName.value,
+            prices = assemblyViewModel.assemblies.value.sumOf { it.devicePriceRecent },
+            isNoPrice = assemblyViewModel.assemblies.value.any { it.devicePriceRecent == 0 }
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
         ) {
-            for (i in deviceTypes.indices step 2) {
-                val leftType = deviceTypes.get(i)
-                val rightType = if (deviceTypes.size > i + 1) deviceTypes.get(i + 1) else null
-                ButtonsRow(
-                    leftContentText = leftType.getOrDefault("text", ""),
-                    rightContentText = rightType?.getOrDefault("text", ""),
-                    onClickLeftButton = {
-                        navController.navigate(
-                            DeviceScreen.route
-                                    + "/${assemblyViewModel.selectedAssemblyId}"
-                                    + "/${assemblyViewModel.selectedAssemblyName.value}"
-                                    + "/${leftType.getOrDefault("path", "")}"
-                        )
-                    },
-                    onClickRightButton = {
-                        navController.navigate(
-                            DeviceScreen.route
-                                    + "/${assemblyViewModel.selectedAssemblyId}"
-                                    + "/${assemblyViewModel.selectedAssemblyName.value}"
-                                    + "/${rightType?.getOrDefault("path", "")}"
-                        )
-                    }
-                )
-            }
+            VariableButtonsRow(
+                navController = navController,
+                assemblyViewModel = assemblyViewModel
+            )
         }
     }
 }

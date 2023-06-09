@@ -76,4 +76,7 @@ class TopViewModel @Inject constructor(
         }
         closeEditDialog()
     }
+    fun getAssemblyName(id: Int): String? {
+        return allAssemblyMap[id]?.get(0)?.assemblyName
+    }
 }
