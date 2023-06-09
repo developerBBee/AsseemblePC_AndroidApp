@@ -1,6 +1,5 @@
 package jp.developer.bbee.assemblepc.presentation.selection.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -76,7 +75,6 @@ fun VariableButtonsRow (
                             )
                         }
                     } else {
-                        Log.d("VariableButtonsRow", "Spacer")
                         Spacer(modifier = Modifier.width(160.dp))
                     }
                 }
