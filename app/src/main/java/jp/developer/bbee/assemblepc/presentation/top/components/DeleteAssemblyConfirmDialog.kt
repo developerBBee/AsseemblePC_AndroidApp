@@ -1,7 +1,12 @@
 package jp.developer.bbee.assemblepc.presentation.top.components
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -13,11 +18,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import jp.developer.bbee.assemblepc.presentation.ScreenRoute.TopScreen
+import jp.developer.bbee.assemblepc.presentation.device.AssemblyViewModel
 import jp.developer.bbee.assemblepc.presentation.top.TopViewModel
 
 @Composable
 fun DeleteAssemblyConfirmDialog(
-    topViewModel: TopViewModel
+    navController: NavController,
+    topViewModel: TopViewModel,
+    assemblyViewModel: AssemblyViewModel = hiltViewModel()
 ) {
     val selectedId = topViewModel.selectedAssemblyId ?: return
     val selectedList = topViewModel.allAssemblyMap[selectedId] ?: return
@@ -72,6 +83,9 @@ fun DeleteAssemblyConfirmDialog(
                 Button(
                     onClick = {
                         topViewModel.deleteAssembly(selectedId, toast)
+                        if (assemblyViewModel.selectedAssemblyId == selectedId) {
+                            navController.navigate(TopScreen.route)
+                        }
                     }
                 ) {
                     Text(text = "構成を削除")

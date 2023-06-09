@@ -33,6 +33,7 @@ class AssemblyViewModel @Inject constructor(
 
     var isShowDialog by mutableStateOf(false)
 
+    var selectedAssemblyWithTop = false
     var selectedAssemblyId = 0
     var selectedAssemblyName = mutableStateOf("")
     var selectedDevice: Device? = null
@@ -42,6 +43,7 @@ class AssemblyViewModel @Inject constructor(
     init {
         val id = savedStateHandle.get<String>("id")?.toInt()
         if (id != 0 && id != null) {
+            selectedAssemblyWithTop = true
             selectedAssemblyId = id
             viewModelScope.launch {
                 val assemblyList = getAssemblyUseCase(id)
@@ -55,8 +57,10 @@ class AssemblyViewModel @Inject constructor(
                 }
             }
         } else {
+            selectedAssemblyWithTop = false
             savedStateHandle.get<String>("name")?.let {
                 selectedAssemblyName.value = it
+                selectedAssemblyWithTop = true
             }
             viewModelScope.launch {
                 val maxId = getMaxAssemblyIdUseCase()
