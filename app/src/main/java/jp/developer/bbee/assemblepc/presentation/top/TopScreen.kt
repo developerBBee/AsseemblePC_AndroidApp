@@ -41,7 +41,13 @@ fun TopScreen(
     assemblyViewModel: AssemblyViewModel = hiltViewModel()
 ) {
     Column(Modifier.fillMaxSize()) {
-        if (assemblyViewModel.selectedAssemblyWithTop) AssemblyInfo()
+        val name = topViewModel.getAssemblyName(assemblyViewModel.selectedAssemblyId)
+        if (name != null)
+            AssemblyInfo(
+                assemblyName = name,
+                prices = assemblyViewModel.assemblies.value.sumOf { it.devicePriceRecent },
+                isNoPrice = assemblyViewModel.assemblies.value.any { it.devicePriceRecent == 0 }
+            )
         Box(
             modifier = Modifier
                 .fillMaxSize()

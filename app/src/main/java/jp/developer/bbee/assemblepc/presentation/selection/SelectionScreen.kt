@@ -41,7 +41,11 @@ fun SelectionScreen(
     assemblyViewModel: AssemblyViewModel = hiltViewModel()
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        AssemblyInfo()
+        AssemblyInfo(
+            assemblyName = assemblyViewModel.selectedAssemblyName.value,
+            prices = assemblyViewModel.assemblies.value.sumOf { it.devicePriceRecent },
+            isNoPrice = assemblyViewModel.assemblies.value.any { it.devicePriceRecent == 0 }
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -27,7 +27,11 @@ fun DeviceScreen(
 ) {
     val state = deviceViewModel.state.value
     Column(modifier = Modifier.fillMaxSize()) {
-        AssemblyInfo()
+        AssemblyInfo(
+            assemblyName = assemblyViewModel.selectedAssemblyName.value,
+            prices = assemblyViewModel.assemblies.value.sumOf { it.devicePriceRecent },
+            isNoPrice = assemblyViewModel.assemblies.value.any { it.devicePriceRecent == 0 }
+        )
         when {
             state.isLoading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))

@@ -23,7 +23,11 @@ fun AssemblyScreen(
         modifier = Modifier.fillMaxSize()
             .background(Color.White)
     ) {
-        AssemblyInfo()
+        AssemblyInfo(
+            assemblyName = assemblyViewModel.selectedAssemblyName.value,
+            prices = assemblyViewModel.assemblies.value.sumOf { it.devicePriceRecent },
+            isNoPrice = assemblyViewModel.assemblies.value.any { it.devicePriceRecent == 0 }
+        )
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(assemblies) { assembly ->
                 AssemblyRow(assembly)

@@ -32,7 +32,7 @@ fun VariableButtonsRow (
     navController: NavController,
     assemblyViewModel: AssemblyViewModel,
 ) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp // viewModelに持っていく？
+    val screenWidth = LocalConfiguration.current.screenWidthDp
     // 画面幅340dpごとに列数を増やすレスポンシブレイアウト
     val rows = (screenWidth / 340).toInt() + 1 // toInt()は不要だが、整数明示のため
     Column(
