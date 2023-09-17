@@ -1,6 +1,11 @@
 package jp.developer.bbee.assemblepc.presentation.device.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -64,7 +69,7 @@ fun AddAssemblyDialog(
                         navController.navigate(
                             ScreenRoute.AssemblyScreen.route
                                     + "/${assemblyViewModel.selectedAssemblyId}"
-                                    + "/${assemblyViewModel.selectedAssemblyName.value}"
+                                    + "/${assemblyViewModel.selectedAssemblyName.value.replace("/", "燬／")}"
                                     + "/${assemblyViewModel.selectedDevice?.device ?: "pccase"}"
                         )
                     }

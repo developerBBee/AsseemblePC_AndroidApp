@@ -62,7 +62,7 @@ fun onClickNavigate(
     arguments: Bundle?
 ) {
     val id = arguments?.getString("id")
-    val name = arguments?.getString("name")
+    val name = arguments?.getString("name")?.replace("/", "燬／")
     val device = arguments?.getString("device")
     if (currentRoute.contains(TopScreen.route) && id == null) {
         // TODO: 暫定対応　画面再描画になってしまうので検討が必要

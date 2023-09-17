@@ -33,7 +33,7 @@ class AssemblyViewModel @Inject constructor(
 
     var isShowDialog by mutableStateOf(false)
 
-    var selectedAssemblyWithTop = false
+    private var selectedAssemblyWithTop = false
     var selectedAssemblyId = 0
     var selectedAssemblyName = mutableStateOf("")
     var selectedDevice: Device? = null
@@ -52,14 +52,14 @@ class AssemblyViewModel @Inject constructor(
                     assemblies.value = assemblyList
                 } else {
                     savedStateHandle.get<String>("name")?.let {
-                        selectedAssemblyName.value = it
+                        selectedAssemblyName.value = restorationSlash(it)
                     }
                 }
             }
         } else {
             selectedAssemblyWithTop = false
             savedStateHandle.get<String>("name")?.let {
-                selectedAssemblyName.value = it
+                selectedAssemblyName.value = restorationSlash(it)
                 selectedAssemblyWithTop = true
             }
             viewModelScope.launch {
@@ -93,5 +93,9 @@ class AssemblyViewModel @Inject constructor(
             deleteItemUseCase(assembly)
             assemblies.value = getAssemblyUseCase(selectedAssemblyId)
         }
+    }
+
+    private fun restorationSlash(str: String): String {
+        return str.replace("燬／", "/")
     }
 }
