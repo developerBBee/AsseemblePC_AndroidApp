@@ -1,6 +1,10 @@
 package jp.developer.bbee.assemblepc.presentation.top.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -58,7 +62,7 @@ fun CreateAssemblyDialog(
                     onClick = {
                         topViewModel.showCreateDialog = false
                         val name = if(topViewModel.createAssemblyName == "") "構成名なし"
-                            else topViewModel.createAssemblyName
+                            else topViewModel.createAssemblyName.replace("/", "燬／")
                         navController.navigate(SelectionScreen.route + "/0" + "/$name" + "/pccase")
                     }
                 ) {

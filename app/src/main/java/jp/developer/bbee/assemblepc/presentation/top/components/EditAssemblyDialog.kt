@@ -1,6 +1,10 @@
 package jp.developer.bbee.assemblepc.presentation.top.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -25,7 +29,7 @@ fun EditAssemblyDialog(
     val selectedId = topViewModel.selectedAssemblyId ?: return
     val selectedList = topViewModel.allAssemblyMap[selectedId] ?: return
     val selectedName = selectedList[0].assemblyName
-    val name = if (selectedName == "") "構成名なし" else selectedName
+    val name = if (selectedName == "") "構成名なし" else selectedName.replace("/", "燬／")
     val navPath = "/${selectedId}/${name}/pccase"
 
     val changeNameButtonEnable = topViewModel.renameStr != selectedName && topViewModel.renameStr != ""

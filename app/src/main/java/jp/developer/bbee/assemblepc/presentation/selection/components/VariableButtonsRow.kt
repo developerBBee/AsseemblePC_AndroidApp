@@ -60,7 +60,7 @@ fun VariableButtonsRow (
                                 navController.navigate(
                                     DeviceScreen.route
                                     + "/${assemblyViewModel.selectedAssemblyId}"
-                                    + "/${assemblyViewModel.selectedAssemblyName.value}"
+                                    + "/${assemblyViewModel.selectedAssemblyName.value.replace("/", "燬／")}"
                                     + "/${type.getOrDefault("path", "")}"
                                 )
                             }
