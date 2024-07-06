@@ -21,7 +21,6 @@ fun AssemblyScreen(
 
     Column(
         modifier = Modifier.fillMaxSize()
-            .background(Color.White)
     ) {
         AssemblyInfo(
             assemblyName = assemblyViewModel.selectedAssemblyName.value,

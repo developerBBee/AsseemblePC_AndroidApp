@@ -6,6 +6,7 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,7 +15,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.TopScreen
-import jp.developer.bbee.assemblepc.presentation.ui.theme.Purple700
 
 @Composable
 fun BottomNavBar(
@@ -24,7 +24,9 @@ fun BottomNavBar(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    BottomNavigation {
+    BottomNavigation(
+        backgroundColor = MaterialTheme.colors.surface,
+    ) {
         items.forEach { screenRoute ->
             val arguments = backStackEntry?.arguments
             BottomNavigationItem(
@@ -37,11 +39,13 @@ fun BottomNavBar(
                 label = { Text(text = stringResource(id = screenRoute.resourceId)) },
                 selected = currentRoute?.contains(screenRoute.route) == true,
                 // TopScreenの場合は他のアイコン色を黒にする
-                unselectedContentColor = if (
-                    currentRoute?.contains(TopScreen.route) == true
-                    && arguments?.getString("id") == null
-                )
-                    Purple700 else LocalContentColor.current.copy(alpha = ContentAlpha.medium),
+                unselectedContentColor = if ((currentRoute?.contains(TopScreen.route) == true) &&
+                    (arguments?.getString("id") == null)) {
+                    LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+                } else {
+                    LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+                },
+                selectedContentColor = MaterialTheme.colors.primary,
                 onClick = {
                     currentRoute?.let { currentRoute ->
                         // 現在の画面のルートと異なる場合のみ遷移する

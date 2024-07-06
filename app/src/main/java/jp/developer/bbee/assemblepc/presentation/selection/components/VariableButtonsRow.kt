@@ -12,11 +12,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -53,8 +53,7 @@ fun VariableButtonsRow (
                                 .height(120.dp)
                                 .clip(shape = RoundedCornerShape(20.dp)),
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color(0xFF1E90FF),
-                                contentColor = Color(0xFFFFFFF0)
+                                backgroundColor = MaterialTheme.colors.primary,
                             ),
                             onClick = {
                                 navController.navigate(

@@ -11,7 +11,10 @@ import jp.developer.bbee.assemblepc.common.NetworkResponse
 import jp.developer.bbee.assemblepc.domain.model.Device
 import jp.developer.bbee.assemblepc.domain.use_case.GetDeviceUseCase
 import jp.developer.bbee.assemblepc.presentation.device.components.SortType
-import jp.developer.bbee.assemblepc.presentation.device.components.SortType.*
+import jp.developer.bbee.assemblepc.presentation.device.components.SortType.NEW_ARRIVAL
+import jp.developer.bbee.assemblepc.presentation.device.components.SortType.POPULARITY
+import jp.developer.bbee.assemblepc.presentation.device.components.SortType.PRICE_ASC
+import jp.developer.bbee.assemblepc.presentation.device.components.SortType.PRICE_DESC
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -125,7 +128,7 @@ class DeviceViewModel @Inject constructor(
         return kanaMap[input] ?: input
     }
 
-    val kanaMap = mapOf(
+    private val kanaMap = mapOf(
         "ｱ" to "ア",
         "ｲ" to "イ",
         "ｳ" to "ウ",
