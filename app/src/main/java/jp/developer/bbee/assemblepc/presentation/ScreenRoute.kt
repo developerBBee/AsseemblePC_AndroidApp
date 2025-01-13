@@ -7,11 +7,61 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.navOptions
 import jp.developer.bbee.assemblepc.R
+import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
+import kotlinx.serialization.Serializable
 
-sealed class ScreenRoute(val route: String, val icon: ImageVector, @StringRes val resourceId: Int) {
-    data object TopScreen : ScreenRoute("top_screen", Icons.Default.Home, R.string.top_screen)
-    data object SelectionScreen : ScreenRoute("selection_screen", Icons.Default.Category, R.string.selection_screen)
-    data object DeviceScreen : ScreenRoute("device_screen", Icons.AutoMirrored.Filled.ManageSearch, R.string.device_screen)
-    data object AssemblyScreen : ScreenRoute("assembly_screen", Icons.Default.Build, R.string.assembly_screen)
+@Serializable
+sealed class ScreenRoute(@StringRes val resourceId: Int) {
+    @Serializable
+    data object TopScreen : ScreenRoute(R.string.top_screen)
+
+    @Serializable
+    data object SelectionScreen : ScreenRoute(R.string.selection_screen)
+
+    @Serializable
+    data class DeviceScreen(
+        val deviceType: DeviceType = DeviceType.PC_CASE
+    ) : ScreenRoute(R.string.device_screen)
+
+    @Serializable
+    data object AssemblyScreen : ScreenRoute(R.string.assembly_screen)
+
+    fun getIcon(): ImageVector = when (this) {
+        is TopScreen -> Icons.Default.Home
+        is SelectionScreen -> Icons.Default.Category
+        is DeviceScreen -> Icons.AutoMirrored.Filled.ManageSearch
+        is AssemblyScreen -> Icons.Default.Build
+    }
+
+    companion object {
+        val ROUTE_LIST = listOf<ScreenRoute>(
+            TopScreen,
+            SelectionScreen,
+            DeviceScreen(),
+            AssemblyScreen
+        )
+    }
+}
+
+fun NavBackStackEntry.toScreenRoute(): ScreenRoute? {
+    // Lint check incorrectly in K2 mode https://issuetracker.google.com/issues/372175033
+    return ScreenRoute.ROUTE_LIST.firstOrNull { destination.hasRoute(it::class) }
+}
+
+fun NavController.navigateSingle(screenRoute: ScreenRoute) {
+    popBackStack(screenRoute, true)
+    if (screenRoute is ScreenRoute.DeviceScreen) {
+        DeviceType.entries.forEach {
+            popBackStack(ScreenRoute.DeviceScreen(it), true)
+        }
+    }
+    val options = navOptions {
+        launchSingleTop = true
+    }
+    navigate(screenRoute, options)
 }

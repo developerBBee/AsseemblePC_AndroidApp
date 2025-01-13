@@ -15,21 +15,27 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.AssemblyScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.DeviceScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.SelectionScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.TopScreen
 import jp.developer.bbee.assemblepc.presentation.components.BottomNavBar
-import jp.developer.bbee.assemblepc.presentation.device.AssemblyScreen
-import jp.developer.bbee.assemblepc.presentation.device.DeviceScreen
-import jp.developer.bbee.assemblepc.presentation.selection.SelectionScreen
-import jp.developer.bbee.assemblepc.presentation.top.TopScreen
+import jp.developer.bbee.assemblepc.presentation.components.HeaderInfoBar
+import jp.developer.bbee.assemblepc.presentation.screen.assembly.AssemblyScreen
+import jp.developer.bbee.assemblepc.presentation.screen.device.DeviceScreen
+import jp.developer.bbee.assemblepc.presentation.screen.selection.SelectionScreen
+import jp.developer.bbee.assemblepc.presentation.screen.top.TopScreen
 import jp.developer.bbee.assemblepc.presentation.ui.theme.AssemblePCTheme
 
 @AndroidEntryPoint
@@ -39,7 +45,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val isDark = isSystemInDarkTheme()
-            DisposableEffect(isDark) {
+            LaunchedEffect(isDark) {
                 enableEdgeToEdge(
                     statusBarStyle = SystemBarStyle.auto(
                         android.graphics.Color.TRANSPARENT,
@@ -50,7 +56,6 @@ class MainActivity : ComponentActivity() {
                         android.graphics.Color.TRANSPARENT,
                     ) { false },
                 )
-                onDispose {}
             }
 
             AssemblePCApp(modifier = Modifier.padding(WindowInsets.systemBars.asPaddingValues()))
@@ -59,21 +64,26 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AssemblePCApp(modifier: Modifier = Modifier) {
+private fun AssemblePCApp(
+    modifier: Modifier = Modifier,
+    viewModel: AppViewModel = hiltViewModel()
+) {
     AssemblePCTheme {
+        val scope = rememberCoroutineScope()
         val navController = rememberNavController()
+
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+        val composition = (uiState as? AppUiState.Selected)?.composition
 
         Scaffold(
             modifier = modifier,
+            topBar = {
+                HeaderInfoBar(composition = composition)
+            },
             bottomBar = {
                 BottomNavBar(
                     navController = navController,
-                    items = listOf(
-                        TopScreen,
-                        SelectionScreen,
-                        DeviceScreen,
-                        AssemblyScreen
-                    )
+                    composition = composition,
                 )
             }
         ) { innerPadding ->
@@ -85,25 +95,30 @@ fun AssemblePCApp(modifier: Modifier = Modifier) {
             ) {
                 NavHost(
                     navController = navController,
-                    startDestination = TopScreen.route,
+                    startDestination = TopScreen,
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    composable(TopScreen.route) {
-                        TopScreen(navController)
+                    composable<TopScreen> {
+                        TopScreen(
+                            navController = navController,
+                            scope = scope
+                        )
                     }
-                    composable(TopScreen.route + "/{show}") {
-                        TopScreen(navController)
+
+                    composable<SelectionScreen> {
+                        SelectionScreen(navController = navController)
                     }
-                    composable(TopScreen.route + "/{id}" + "/{name}" + "/{device}") {
-                        TopScreen(navController)
+
+                    composable<DeviceScreen> { entry ->
+                        val deviceType = entry.toRoute<DeviceScreen>().deviceType
+                        DeviceScreen(
+                            deviceType = deviceType,
+                            navController = navController,
+                            scope = scope
+                        )
                     }
-                    composable(SelectionScreen.route + "/{id}" + "/{name}" + "/{device}") {
-                        SelectionScreen(navController)
-                    }
-                    composable(DeviceScreen.route + "/{id}" + "/{name}" + "/{device}") {
-                        DeviceScreen(navController)
-                    }
-                    composable(AssemblyScreen.route + "/{id}" + "/{name}" + "/{device}") {
+
+                    composable<AssemblyScreen> {
                         AssemblyScreen()
                     }
                 }

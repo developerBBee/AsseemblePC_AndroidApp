@@ -6,4 +6,24 @@
     <string name="assembly_screen">構成</string>
 
     <string name="network_err_msg">インターネットに接続されていることを確認し、通信状態が良い状態でリトライしてください。</string>
+
+    <string name="pc_case">PCケース</string>
+    <string name="motherboard">マザーボード</string>
+    <string name="power_supply">電源</string>
+    <string name="cpu">CPU</string>
+    <string name="cpu_cooler">CPUクーラー</string>
+    <string name="pc_memory">メモリ</string>
+    <string name="ssd">SSD</string>
+    <string name="hdd_35inch">HDD</string>
+    <string name="video_card">グラフィック\nボード</string>
+    <string name="os_soft">OS</string>
+    <string name="lcd_monitor">ディスプレイ</string>
+    <string name="keyboard">キーボード</string>
+    <string name="mouse">マウス</string>
+    <string name="dvd_drive">DVDドライブ</string>
+    <string name="bd_drive">BDドライブ</string>
+    <string name="sound_card">サウンドカード</string>
+    <string name="pc_speaker">スピーカー</string>
+    <string name="fan_controller">ファン\nコントローラー</string>
+    <string name="case_fan">ファン</string>
 </resources>

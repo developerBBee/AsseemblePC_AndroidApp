@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.gms)
     alias(libs.plugins.firebase.crashlytics)
@@ -11,12 +12,12 @@ plugins {
 
 android {
     namespace = "jp.developer.bbee.assemblepc"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "jp.developer.bbee.assemblepc"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 6
         versionName = "1.5"
 
@@ -27,6 +28,7 @@ android {
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
+            arg("room.generateKotlin", "true")
         }
     }
 
@@ -49,10 +51,7 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
-    }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -74,6 +73,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.kotlin.serialization.json)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
@@ -88,6 +88,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     implementation(libs.navigation.compose)
+    implementation(libs.datastore.preferences)
 
     implementation(libs.coil.compose)
 
