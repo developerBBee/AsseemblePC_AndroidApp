@@ -1,14 +1,12 @@
 package jp.developer.bbee.assemblepc.data.repository
 
 import jp.developer.bbee.assemblepc.data.remote.DeviceApi
-import jp.developer.bbee.assemblepc.data.remote.DeviceDto
-import jp.developer.bbee.assemblepc.data.remote.toDevice
 import jp.developer.bbee.assemblepc.data.remote.toIntUpdate
 import jp.developer.bbee.assemblepc.data.room.AssemblyDeviceDao
 import jp.developer.bbee.assemblepc.domain.model.Assembly
 import jp.developer.bbee.assemblepc.domain.model.Device
 import jp.developer.bbee.assemblepc.domain.model.DeviceUpdate
-import jp.developer.bbee.assemblepc.domain.model.toDeviceDto
+import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
 import jp.developer.bbee.assemblepc.domain.repository.DeviceRepository
 import javax.inject.Inject
 
@@ -16,45 +14,48 @@ class DeviceRepositoryImpl @Inject constructor(
     private val api: DeviceApi,
     private val assemblyDeviceDao: AssemblyDeviceDao
 ) : DeviceRepository {
+
     private var apiUpdate: Int = 0
-    private val storedUpdate: MutableMap<String, Int> = mutableMapOf(
-        "pccase" to 0,
-        "motherboard" to 0,
-        "powersupply" to 0,
-        "cpu" to 0,
-        "cpucooler" to 0,
-        "pcmemory" to 0,
-        "hdd35inch" to 0,
-        "ssd" to 0,
-        "videocard" to 0,
-        "ossoft" to 0,
-        "lcdmonitor" to 0,
-        "keyboard" to 0,
-        "mouse" to 0,
-        "dvddrive" to 0,
-        "bluraydrive" to 0,
-        "soundcard" to 0,
-        "pcspeaker" to 0,
-        "fancontroller" to 0,
-        "casefan" to 0
+
+    private val storedUpdate: MutableMap<DeviceType, Int> = mutableMapOf(
+        DeviceType.PC_CASE to 0,
+        DeviceType.MOTHER_BOARD to 0,
+        DeviceType.POWER_SUPPLY to 0,
+        DeviceType.CPU to 0,
+        DeviceType.CPU_COOLER to 0,
+        DeviceType.MEMORY to 0,
+        DeviceType.SSD to 0,
+        DeviceType.HDD to 0,
+        DeviceType.VIDEO_CARD to 0,
+        DeviceType.OS to 0,
+        DeviceType.DISPLAY to 0,
+        DeviceType.KEYBOARD to 0,
+        DeviceType.MOUSE to 0,
+        DeviceType.DVD_DRIVE to 0,
+        DeviceType.BD_DRIVE to 0,
+        DeviceType.SOUND_CARD to 0,
+        DeviceType.SPEAKER to 0,
+        DeviceType.FAN_CONTROLLER to 0,
+        DeviceType.CASE_FAN to 0
     )
-    override suspend fun getDeviceList(device: String): DeviceDto {
+
+    override suspend fun getDeviceList(deviceType: DeviceType): List<Device> {
         if (apiUpdate == 0) {
             apiUpdate = api.getLastUpdate().toIntUpdate()
         }
-        if (storedUpdate.getOrDefault(device, 0) == 0) {
-            val storedDeviceUpdates = assemblyDeviceDao.loadDeviceUpdate(device)
+        if (storedUpdate.getOrDefault(deviceType, 0) == 0) {
+            val storedDeviceUpdates = assemblyDeviceDao.loadDeviceUpdate(deviceType.key)
             if (storedDeviceUpdates.isNotEmpty()) {
-                storedUpdate.put(device, storedDeviceUpdates.first().update)
+                storedUpdate.put(deviceType, storedDeviceUpdates.first().update)
             }
         }
-        if (storedUpdate.getOrDefault(device, 0) < apiUpdate) {
-            val dto = api.getDeviceList(device)
-            dto.toDevice().forEach { assemblyDeviceDao.insertDevice(it) }
-            assemblyDeviceDao.insertDeviceUpdate(DeviceUpdate(device, apiUpdate))
-            return dto
+        if (storedUpdate.getOrDefault(deviceType, 0) < apiUpdate) {
+            val deviceList = api.getDeviceList(deviceType.key).toDevice()
+            deviceList.forEach { assemblyDeviceDao.insertDevice(it) }
+            assemblyDeviceDao.insertDeviceUpdate(DeviceUpdate(deviceType.key, apiUpdate))
+            return deviceList
         }
-        return assemblyDeviceDao.loadDevice(device).toDeviceDto()
+        return assemblyDeviceDao.loadDevice(deviceType.key)
     }
 
     override suspend fun loadAssembly(assemblyId: Int): List<Assembly> {
