@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.developer.bbee.assemblepc.domain.model.Composition
-import jp.developer.bbee.assemblepc.domain.use_case.DeleteAssemblyUseCase
-import jp.developer.bbee.assemblepc.domain.use_case.GetAllAssemblyUseCase
+import jp.developer.bbee.assemblepc.domain.use_case.DeleteCompositionUseCase
+import jp.developer.bbee.assemblepc.domain.use_case.GetCompositionsUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetMaxAssemblyIdUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.RenameAssemblyUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.SaveCurrentCompositionUseCase
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -20,12 +21,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TopViewModel @Inject constructor(
-    private val getAllAssemblyUseCase: GetAllAssemblyUseCase,
-    private val deleteAssemblyUseCase: DeleteAssemblyUseCase,
+    private val getCompositionsUseCase: GetCompositionsUseCase,
+    private val deleteCompositionUseCase: DeleteCompositionUseCase,
     private val renameAssemblyUseCase: RenameAssemblyUseCase,
     private val getMaxAssemblyIdUseCase: GetMaxAssemblyIdUseCase,
     private val saveCurrentCompositionUseCase: SaveCurrentCompositionUseCase,
 ) : ViewModel() {
+    private val handler = CoroutineExceptionHandler { _, ex -> handleError(ex) }
 
     private val _uiState = MutableStateFlow<TopUiState>(TopUiState.Loading)
     val uiState: StateFlow<TopUiState> = _uiState.asStateFlow()
@@ -37,21 +39,14 @@ class TopViewModel @Inject constructor(
     val navFlow: SharedFlow<TopSideEffect> = _navFlow.asSharedFlow()
 
     init {
-        viewModelScope.launch {
-            getAllAssembly()
+        viewModelScope.launch(handler) {
+            getCompositions()
         }
     }
 
-    private suspend fun getAllAssembly() {
-        val allAssembly = getAllAssemblyUseCase()
-
-        // assemblyIdごとにAssemblyをまとめる
-        val allComposition = allAssembly.groupBy { it.assemblyId }
-            .map { (assemblyId, items) ->
-                Composition(assemblyId, items[0].assemblyName, items)
-            }
-
-        _uiState.value = TopUiState.Loaded(allComposition)
+    private suspend fun getCompositions() {
+        val compositions = getCompositionsUseCase()
+        _uiState.value = TopUiState.Loaded(compositions)
     }
 
     fun showCreateDialog() {
@@ -70,10 +65,10 @@ class TopViewModel @Inject constructor(
     }
 
     fun renameAssembly(newName: String, assemblyId: Int) {
-        closeDialog()
-        viewModelScope.launch {
+        clearDialog()
+        viewModelScope.launch(handler) {
             renameAssemblyUseCase(newName, assemblyId)
-            getAllAssembly()
+            getCompositions()
         }
     }
 
@@ -85,21 +80,23 @@ class TopViewModel @Inject constructor(
         assemblyId: Int,
         onComplete: () -> Unit
     ) {
-        closeDialog()
-        viewModelScope.launch {
-            deleteAssemblyUseCase(assemblyId)
-            getAllAssembly()
+        clearDialog()
+        viewModelScope.launch(handler) {
+            deleteCompositionUseCase(assemblyId)
+            getCompositions()
             onComplete()
         }
     }
 
     fun createNewComposition(assemblyName: String) {
-        closeDialog()
-        viewModelScope.launch {
+        clearDialog()
+
+        viewModelScope.launch(handler) {
             val id = (getMaxAssemblyIdUseCase() ?: 0) + 1
             val newComposition = Composition(
                 assemblyId = id,
                 assemblyName = assemblyName,
+                items = emptyList()
             )
             saveCurrentCompositionUseCase(newComposition)
             _navFlow.emit(TopSideEffect.NEW_CREATION)
@@ -107,29 +104,35 @@ class TopViewModel @Inject constructor(
     }
 
     fun addParts(targetComposition: Composition) {
-        closeDialog()
-        viewModelScope.launch {
+        clearDialog()
+        viewModelScope.launch(handler) {
             saveCurrentCompositionUseCase(targetComposition)
             _navFlow.emit(TopSideEffect.ADD_PARTS)
         }
     }
 
     fun showComposition(targetComposition: Composition) {
-        closeDialog()
-        viewModelScope.launch {
+        clearDialog()
+        viewModelScope.launch(handler) {
             saveCurrentCompositionUseCase(targetComposition)
             _navFlow.emit(TopSideEffect.SHOW_COMPOSITION)
         }
     }
 
-    fun closeDialog() {
+    fun clearDialog() {
         _dialogUiState.value = null
+    }
+
+    private fun handleError(error: Throwable) {
+        clearDialog()
+        _uiState.value = TopUiState.Error(error.message)
     }
 }
 
 sealed interface TopUiState {
     data object Loading : TopUiState
     data class Loaded(val allComposition: List<Composition>) : TopUiState
+    data class Error(val error: String?) : TopUiState
 }
 
 sealed interface TopDialogUiState {

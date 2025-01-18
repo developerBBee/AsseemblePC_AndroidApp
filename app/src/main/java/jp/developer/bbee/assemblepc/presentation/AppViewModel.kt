@@ -6,9 +6,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.use_case.ClearCurrentCompositionUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetCurrentCompositionUseCase
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -19,13 +21,14 @@ import javax.inject.Inject
 class AppViewModel @Inject constructor(
     getCurrentCompositionUseCase: GetCurrentCompositionUseCase,
     clearCurrentCompositionUseCase: ClearCurrentCompositionUseCase,
-): ViewModel() {
+) : ViewModel() {
+    private val handler = CoroutineExceptionHandler { _, ex -> handleError() }
 
     private val _uiState = MutableStateFlow<AppUiState>(AppUiState.NoSelected)
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
 
     init {
-        val job = viewModelScope.launch {
+        val job = viewModelScope.launch(handler) {
             // アプリが立ち上がった時に、空の構成が選択されている場合はクリアする
             val composition = getCurrentCompositionUseCase().first()
             if (composition != null && composition.items.isEmpty()) {
@@ -42,8 +45,13 @@ class AppViewModel @Inject constructor(
                         _uiState.value = AppUiState.Selected(composition)
                     }
                 }
+                .catch { handleError() }
                 .launchIn(viewModelScope)
         }
+    }
+
+    private fun handleError() {
+        _uiState.value = AppUiState.NoSelected
     }
 }
 

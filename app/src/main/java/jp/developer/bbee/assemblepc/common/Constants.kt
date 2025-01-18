@@ -1,9 +1,15 @@
 package jp.developer.bbee.assemblepc.common
 
+import jp.developer.bbee.assemblepc.domain.model.Assembly
+import jp.developer.bbee.assemblepc.domain.model.Composition
+import jp.developer.bbee.assemblepc.domain.model.Device
+import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
+import jp.developer.bbee.assemblepc.domain.model.toPrice
+
 object Constants {
     const val BASE_URL = "https://www.pcbuilding.link/"
 
-    val kanaHalfToFull = mapOf(
+    val KANA_HALF_TO_FULL = mapOf(
         "ｱ" to "ア",
         "ｲ" to "イ",
         "ｳ" to "ウ",
@@ -93,5 +99,42 @@ object Constants {
         "ｳﾞ" to "ヴ",
         "ﾜﾞ" to "ヷ",
         "ｦﾞ" to "ヺ",
+    )
+
+    val DEVICE_SAMPLE = Device(
+        id = "1",
+        device = DeviceType.MEMORY.key,
+        name = "DDR4-3200 16GB x2",
+        imgurl = "https://example.com/pc_case.jpg",
+        url = "https://example.com/pc_case",
+        detail = "メモリの詳細",
+        price = 10000.toPrice(),
+        rank = 1,
+        releasedate = "2021-01-01",
+        invisible = false,
+        flag1 = null,
+        flag2 = null,
+        createddate = null,
+        lastupdate = null,
+    )
+
+    val ASSEMBLY_SAMPLE = Assembly(
+        id = 1,
+        assemblyId = 1,
+        assemblyName = "サンプル構成",
+        deviceId = DEVICE_SAMPLE.id,
+        deviceType = DEVICE_SAMPLE.device,
+        deviceName = DEVICE_SAMPLE.name,
+        deviceImgUrl = DEVICE_SAMPLE.imgurl,
+        deviceDetail = DEVICE_SAMPLE.detail,
+        devicePriceSaved = DEVICE_SAMPLE.price,
+        devicePriceRecent = DEVICE_SAMPLE.price,
+    )
+
+    val COMPOSITION_SAMPLE = Composition.of(
+        assemblyId = ASSEMBLY_SAMPLE.assemblyId,
+        assemblyName = ASSEMBLY_SAMPLE.assemblyName,
+        assemblies = listOf(ASSEMBLY_SAMPLE),
+        devices = listOf(DEVICE_SAMPLE),
     )
 }

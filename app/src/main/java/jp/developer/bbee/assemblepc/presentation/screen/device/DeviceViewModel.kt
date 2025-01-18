@@ -3,23 +3,30 @@ package jp.developer.bbee.assemblepc.presentation.screen.device
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jp.developer.bbee.assemblepc.common.Constants.kanaHalfToFull
-import jp.developer.bbee.assemblepc.common.NetworkResponse
+import jp.developer.bbee.assemblepc.common.Constants.KANA_HALF_TO_FULL
+import jp.developer.bbee.assemblepc.common.AppResponse
 import jp.developer.bbee.assemblepc.domain.model.Assembly
+import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.model.MAX_PRICE
 import jp.developer.bbee.assemblepc.domain.model.ZERO_PRICE
 import jp.developer.bbee.assemblepc.domain.model.Device
 import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
 import jp.developer.bbee.assemblepc.domain.use_case.AddAssemblyUseCase
+import jp.developer.bbee.assemblepc.domain.use_case.DeleteAssemblyUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetCurrentCompositionUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetDeviceUseCase
 import jp.developer.bbee.assemblepc.presentation.screen.device.components.SortType
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -27,12 +34,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DeviceViewModel @Inject constructor(
-    getCurrentCompositionUseCase: GetCurrentCompositionUseCase, // TODO 現在の構成に含まれるデバイスをリストの先頭に表示するために取得する
+    getCurrentCompositionUseCase: GetCurrentCompositionUseCase,
     private val getDeviceUseCase: GetDeviceUseCase,
     private val addAssemblyUseCase: AddAssemblyUseCase,
+    private val deleteAssemblyUseCase: DeleteAssemblyUseCase,
 ) : ViewModel() {
+    private val handler = CoroutineExceptionHandler { _, ex -> handleError(ex) }
 
-    private var viewModelState = DeviceViewModelState()
+    private val compositionFlow = MutableStateFlow<Composition?>(null)
 
     private val _uiState = MutableStateFlow<DeviceUiState>(DeviceUiState.Loading)
     val uiState: StateFlow<DeviceUiState> = _uiState.asStateFlow()
@@ -43,43 +52,46 @@ class DeviceViewModel @Inject constructor(
     private val _navigationSideEffect = MutableSharedFlow<Unit>()
     val navigationSideEffect: Flow<Unit> = _navigationSideEffect.asSharedFlow()
 
+    private var uiJob : Job? = null
+    private var deviceJob: Job? = null
+
     init {
-        getCurrentCompositionUseCase()
+        uiJob = getCurrentCompositionUseCase()
             .onEach { composition ->
                 if (composition == null) {
                     _uiState.value = DeviceUiState.Error(error = "構成が設定されていません")
+                    deviceJob?.cancel()
                 } else {
-                    viewModelState = viewModelState.copy(
-                        assemblyId = composition.assemblyId,
-                        assemblyName = composition.assemblyName,
-                        currentDeviceIdList = composition.items.map { it.deviceId }
-                    )
+                    compositionFlow.value = composition
+
+                    (uiState.value as? DeviceUiState.Success)?.also {
+                        _uiState.value = it.copy(composition = composition)
+                    }
                 }
             }
             .launchIn(viewModelScope)
     }
 
     fun getDeviceList(deviceType: DeviceType) {
-        viewModelState = viewModelState.copy(deviceType = deviceType)
+        if (uiState.value is DeviceUiState.Error) return
 
-        getDeviceUseCase(deviceType).onEach {
+        deviceJob = getDeviceUseCase(deviceType).onEach {
             when (it) {
-                is NetworkResponse.Loading -> {
+                is AppResponse.Loading -> {
                     _uiState.value = DeviceUiState.Loading
                 }
 
-                is NetworkResponse.Success -> {
+                is AppResponse.Success -> {
                     val deviceList = it.data ?: emptyList()
-                    viewModelState = viewModelState.copy(devices = deviceList)
+
                     _uiState.value = DeviceUiState.Success(
+                        deviceType = deviceType,
                         devices = deviceList,
-                        currentDeviceIdList = viewModelState.currentDeviceIdList,
-                        searchText = viewModelState.searchText,
-                        currentDeviceSort = viewModelState.currentDeviceSort,
+                        composition = compositionFlow.filterNotNull().first()
                     )
                 }
 
-                is NetworkResponse.Failure -> {
+                is AppResponse.Failure -> {
                     _uiState.value = DeviceUiState.Error(it.error)
                 }
             }
@@ -87,21 +99,22 @@ class DeviceViewModel @Inject constructor(
     }
 
     fun changeSortType(sort: SortType) {
-        viewModelState = viewModelState.copy(currentDeviceSort = sort)
-        filterDeviceList()
+        filterDeviceList(newSort = sort)
     }
 
     fun searchDevice(text: String) {
-        viewModelState = viewModelState.copy(searchText = text)
-        filterDeviceList()
+        filterDeviceList(newSearch = text)
     }
 
-    private fun filterDeviceList() {
+    private fun filterDeviceList(
+        newSort: SortType? = null,
+        newSearch: String? = null
+    ) {
         val successState = uiState.value as? DeviceUiState.Success ?: return
 
-        val devices = viewModelState.devices
-        val searchText = viewModelState.searchText
-        val sort = viewModelState.currentDeviceSort
+        val devices = successState.devices
+        val sort = newSort ?: successState.currentDeviceSort
+        val searchText = newSearch ?: successState.searchText
 
         val searchList = createSearchList(searchText)
 
@@ -141,7 +154,7 @@ class DeviceViewModel @Inject constructor(
             if (i < input.length -1) {
                 val c2 = input[i+1]
                 val str = c1.toString() + c2.toString()
-                if ((c2 == 'ﾞ' || c2 == 'ﾟ') && kanaHalfToFull.keys.contains(str)) {
+                if ((c2 == 'ﾞ' || c2 == 'ﾟ') && KANA_HALF_TO_FULL.keys.contains(str)) {
                     sb.append(mapKanaHalfToFull(str))
                 } else {
                     sb.append(mapKanaHalfToFull(c1.toString()))
@@ -154,60 +167,104 @@ class DeviceViewModel @Inject constructor(
     }
 
     private fun mapKanaHalfToFull(input: String): String {
-        return kanaHalfToFull[input] ?: input
+        return KANA_HALF_TO_FULL[input] ?: input
     }
 
     fun notifyDeviceSelected(device: Device) {
-        _dialogUiState.value = ShowDeviceAdditionDialog(device)
+        val deviceQty = DeviceWithQty(device, 1)
+        _dialogUiState.value = ShowDeviceAdditionDialog(deviceQty = deviceQty, isEdit = false)
+    }
+
+    fun notifyDeviceSelected(deviceQty: DeviceWithQty) {
+        _dialogUiState.value = ShowDeviceAdditionDialog(deviceQty = deviceQty, isEdit = true)
     }
 
     fun clearDialog() {
         _dialogUiState.value = null
     }
 
-    fun addAssembly(device: Device) {
+    fun addAssembly(device: Device, quantity: Int = 1, isEdit: Boolean) {
         clearDialog()
 
-        val assembly = Assembly(
-            assemblyId = viewModelState.assemblyId,
-            assemblyName = viewModelState.assemblyName,
-            deviceId = device.id,
-            deviceType = device.device,
-            deviceName = device.name,
-            deviceImgUrl = device.imgurl,
-            deviceDetail = device.detail,
-            devicePriceSaved = device.price,
-            devicePriceRecent = device.price,
-        )
+        val state = uiState.value as? DeviceUiState.Success ?: return
 
-        viewModelScope.launch {
-            addAssemblyUseCase(assembly)
-            _navigationSideEffect.emit(Unit)
+        val assemblies = List(quantity) {
+            Assembly(
+                assemblyId = state.composition.assemblyId,
+                assemblyName = state.composition.assemblyName,
+                deviceId = device.id,
+                deviceType = device.device,
+                deviceName = device.name,
+                deviceImgUrl = device.imgurl,
+                deviceDetail = device.detail,
+                devicePriceSaved = device.price,
+                devicePriceRecent = device.price,
+            )
+        }
+
+        viewModelScope.launch(handler) {
+            if (isEdit) {
+                // 編集は画面遷移しない
+                addAssemblyUseCase(assemblies)
+            } else {
+                // 新規追加は画面遷移する
+                stopAllJob()
+                addAssemblyUseCase(assemblies)
+                _navigationSideEffect.emit(Unit)
+            }
         }
     }
-}
 
-private data class DeviceViewModelState(
-    val assemblyId: Int = 0,
-    val assemblyName: String = "",
-    val deviceType: DeviceType = DeviceType.PC_CASE,
-    val devices: List<Device> = emptyList(),
-    val currentDeviceIdList: List<String> = emptyList(),
-    val searchText: String = "",
-    val currentDeviceSort: SortType = SortType.POPULARITY,
-)
+    fun deleteAssembly(device: Device, quantity: Int) {
+        clearDialog()
+
+        val state = uiState.value as? DeviceUiState.Success ?: return
+
+        viewModelScope.launch(handler) {
+            deleteAssemblyUseCase(
+                assemblyId = state.composition.assemblyId,
+                deviceId = device.id,
+                quantity = quantity
+            )
+        }
+    }
+
+    private suspend fun stopAllJob() {
+        uiJob?.cancelAndJoin()
+        deviceJob?.cancelAndJoin()
+    }
+
+    private fun handleError(error: Throwable) {
+        clearDialog()
+        _uiState.value = DeviceUiState.Error(error.message)
+    }
+}
 
 sealed interface DeviceUiState {
     data object Loading : DeviceUiState
 
     data class Success(
+        val deviceType: DeviceType = DeviceType.PC_CASE,
         val devices: List<Device>,
-        val currentDeviceIdList: List<String>,
-        val searchText: String,
-        val currentDeviceSort: SortType,
-    ) : DeviceUiState
+        val searchText: String = "",
+        val currentDeviceSort: SortType = SortType.POPULARITY,
+        val composition: Composition,
+    ) : DeviceUiState {
+
+        val selectedDevices: List<DeviceWithQty> = composition.items
+            .filter { it.deviceType == deviceType.key }
+            .mapNotNull { item ->
+                devices.firstOrNull { item.deviceId == it.id }
+                    ?.let { device -> DeviceWithQty(device, item.quantity) }
+            }
+    }
 
     data class Error(val error: String?) : DeviceUiState
 }
 
-data class ShowDeviceAdditionDialog(val device: Device)
+data class ShowDeviceAdditionDialog(val deviceQty: DeviceWithQty, val isEdit: Boolean = false)
+
+data class DeviceWithQty(
+    val device: Device,
+    val quantity: Int,
+)

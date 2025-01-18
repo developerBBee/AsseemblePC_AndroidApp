@@ -17,16 +17,14 @@ interface AssemblyDeviceDao {
     @Query("SELECT * FROM Device WHERE device = :device")
     suspend fun loadDevice(device: String): List<Device>
 
-    // 存在チェック 0:存在しない >0:存在する
-    @Query("SELECT COUNT(*) FROM Device WHERE id = :id")
-    suspend fun existDeviceById(id: String): Int
-
+    @Query("SELECT * FROM Device WHERE id IN (:ids)")
+    suspend fun loadDeviceByIds(ids: List<String>): List<Device>
 
     /**
      * Assembly Table CRUD
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAssembly(assembly: Assembly)
+    suspend fun insertAssemblies(assemblies: List<Assembly>)
 
     @Query("SELECT * FROM Assembly WHERE assemblyId = :assemblyId")
     suspend fun loadAssembly(assemblyId: Int): List<Assembly>
@@ -35,7 +33,7 @@ interface AssemblyDeviceDao {
     suspend fun loadAllAssembly(): List<Assembly>
 
     @Delete
-    suspend fun deleteAssembly(assembly: Assembly)
+    suspend fun deleteAssembly(assemblies: List<Assembly>)
 
     @Query("DELETE FROM Assembly WHERE assemblyId = :assemblyId")
     suspend fun deleteAssemblyById(assemblyId: Int)

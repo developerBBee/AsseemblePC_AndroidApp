@@ -8,6 +8,7 @@ import jp.developer.bbee.assemblepc.data.store.dataStore
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.repository.CurrentCompositionRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -34,6 +35,10 @@ class CurrentCompositionRepositoryImpl @Inject constructor(
             .map { pref ->
                 pref[CURRENT_COMPOSITION_KEY]
                     ?.let { defaultJson.decodeFromString<Composition>(it) }
+            }
+            .catch { _ ->
+                clearCurrentComposition()
+                emit(null)
             }
 
     companion object {

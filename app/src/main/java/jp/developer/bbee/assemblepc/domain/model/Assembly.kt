@@ -18,3 +18,21 @@ data class Assembly(
     val devicePriceSaved: Price,
     val devicePriceRecent: Price,
 )
+
+fun List<Assembly>.toCompositionItems(
+    assemblyId: Int,
+    devices: List<Device>
+): List<CompositionItem> =
+    filter { it.assemblyId == assemblyId }
+        .groupingBy { it.deviceId }
+        .eachCount()
+        .mapNotNull { (id, quantity) ->
+            devices.find { it.id == id }
+                ?.let { device -> device to quantity }
+        }
+        .map { (device, quantity) ->
+            CompositionItem.of(
+                quantity = quantity,
+                device = device
+            )
+        }

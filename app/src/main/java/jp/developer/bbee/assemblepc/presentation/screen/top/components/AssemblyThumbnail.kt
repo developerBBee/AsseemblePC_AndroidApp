@@ -20,24 +20,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import jp.developer.bbee.assemblepc.domain.model.sumYen
-import jp.developer.bbee.assemblepc.domain.model.Assembly
+import jp.developer.bbee.assemblepc.domain.model.Composition
+import jp.developer.bbee.assemblepc.domain.model.CompositionItem
 
 @Composable
 fun AssemblyThumbnail(
-    assemblies: List<Assembly> = emptyList(),
+    composition: Composition,
     onClick: () -> Unit
 ) {
     Card(elevation = 5.dp, modifier = Modifier.padding(10.dp)) {
-        ThumbnailContents(assemblies = assemblies, onClick = onClick)
+        ThumbnailContents(composition = composition, onClick = onClick)
     }
 }
 
 @Composable
-fun ThumbnailContents(
-    assemblies: List<Assembly>,
+private fun ThumbnailContents(
+    composition: Composition,
     onClick: () -> Unit
 ) {
-    val max = assemblies.size
+    val items = composition.items
+    val max = items.size
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -54,21 +57,21 @@ fun ThumbnailContents(
                 modifier = Modifier.weight(1f)
             ) {
                 AsyncImage(
-                    model = if (max > 0) assemblies[0].deviceImgUrl else null,
+                    model = if (max > 0) items[0].deviceImgUrl else null,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
                     contentDescription = "左上の画像"
                 )
                 AsyncImage(
-                    model = if (max > 1) assemblies[1].deviceImgUrl else null,
+                    model = if (max > 1) items[1].deviceImgUrl else null,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
                     contentDescription = "中上の画像"
                 )
                 AsyncImage(
-                    model = if (max > 2) assemblies[2].deviceImgUrl else null,
+                    model = if (max > 2) items[2].deviceImgUrl else null,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
@@ -81,21 +84,21 @@ fun ThumbnailContents(
                 modifier = Modifier.weight(1f)
             ) {
                 AsyncImage(
-                    model = if (max > 3) assemblies[3].deviceImgUrl else null,
+                    model = if (max > 3) items[3].deviceImgUrl else null,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
                     contentDescription = "左下の画像"
                 )
                 AsyncImage(
-                    model = if (max > 4) assemblies[4].deviceImgUrl else null,
+                    model = if (max > 4) items[4].deviceImgUrl else null,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
                     contentDescription = "中下の画像"
                 )
                 AsyncImage(
-                    model = if (max > 5) assemblies[5].deviceImgUrl else null,
+                    model = if (max > 5) items[5].deviceImgUrl else null,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
@@ -107,14 +110,15 @@ fun ThumbnailContents(
             modifier = Modifier
                 .fillMaxSize()
         ){
-            OverlayText(assemblies)
+            OverlayText(composition = composition)
         }
     }
 }
 
 @Composable
-fun OverlayText(assemblies: List<Assembly>) {
-    val max = assemblies.size
+private fun OverlayText(composition: Composition) {
+    val items: List<CompositionItem> = composition.items
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -122,7 +126,7 @@ fun OverlayText(assemblies: List<Assembly>) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = if (max > 0) assemblies[0].assemblyName else "",
+            text = composition.assemblyName,
             textAlign = TextAlign.Center,
             fontSize = 36.sp,
             fontWeight = FontWeight.ExtraBold,
@@ -133,7 +137,7 @@ fun OverlayText(assemblies: List<Assembly>) {
             modifier = Modifier.align(Alignment.Center)
         )
         Text(
-            text = "総額 " + assemblies.map { it.devicePriceRecent }.sumYen(),
+            text = "総額 " + items.map { it.devicePriceRecent * it.quantity }.sumYen(),
             fontSize = 32.sp,
             fontWeight = FontWeight.ExtraBold,
             fontStyle = FontStyle.Italic,

@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import jp.developer.bbee.assemblepc.domain.model.Assembly
-import jp.developer.bbee.assemblepc.presentation.screen.assembly.components.AssemblyDetailDialog
+import jp.developer.bbee.assemblepc.domain.model.CompositionItem
+import jp.developer.bbee.assemblepc.presentation.components.AssemblyDialog
 import jp.developer.bbee.assemblepc.presentation.screen.assembly.components.AssemblyRow
 
 @Composable
@@ -31,23 +31,26 @@ fun AssemblyScreen(
         }
 
         is AssemblyUiState.Error -> {
-            Text(text = state.error)
+            Text(text = state.error ?: "エラーが発生しました")
         }
 
         is AssemblyUiState.ShowComposition -> {
             AssemblyContent(
                 modifier = Modifier.fillMaxSize(),
-                assemblies = state.composition.items,
-                onAssemblyClick = { assemblyViewModel.showAssemblyDialog(it) }
+                items = state.composition.items,
+                onAssemblyClick = assemblyViewModel::showAssemblyDialog
             )
         }
     }
 
-    dialogUiState?.let { state ->
-        AssemblyDetailDialog(
-            assembly = state.assembly,
-            onDismiss = { assemblyViewModel.clearDialog() },
-            onDeleteClick = { assemblyViewModel.deleteAssembly(state.assembly) }
+    dialogUiState?.let { (deviceQty) ->
+        AssemblyDialog(
+            isEdit = true,
+            quantity = deviceQty.quantity,
+            device = deviceQty.device,
+            onDismiss = assemblyViewModel::clearDialog,
+            onAddAssembly = { device, qty, _ -> assemblyViewModel.addAssembly(device, qty) },
+            onDeleteAssembly = assemblyViewModel::deleteAssembly,
         )
     }
 }
@@ -55,17 +58,17 @@ fun AssemblyScreen(
 @Composable
 private fun AssemblyContent(
     modifier: Modifier = Modifier,
-    assemblies: List<Assembly>,
-    onAssemblyClick: (Assembly) -> Unit
+    items: List<CompositionItem>,
+    onAssemblyClick: (CompositionItem) -> Unit
 ) {
 
     Column(modifier = modifier) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(assemblies) { assembly ->
+            items(items) { item ->
                 AssemblyRow(
                     modifier = Modifier.padding(10.dp),
-                    assembly = assembly,
-                    onAssemblyClick = { onAssemblyClick(assembly) }
+                    item = item,
+                    onAssemblyClick = { onAssemblyClick(item) }
                 )
             }
         }
