@@ -1,5 +1,6 @@
 package jp.developer.bbee.assemblepc.presentation.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ContentAlpha
@@ -8,27 +9,26 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.compose.ui.tooling.preview.Preview
+import jp.developer.bbee.assemblepc.common.Constants
 import jp.developer.bbee.assemblepc.domain.model.Composition
+import jp.developer.bbee.assemblepc.presentation.ROUTE_LIST
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute
-import jp.developer.bbee.assemblepc.presentation.navigateSingle
-import jp.developer.bbee.assemblepc.presentation.toScreenRoute
+import jp.developer.bbee.assemblepc.presentation.ui.theme.AssemblePCTheme
 
 @Composable
 fun BottomNavBar(
-    navController: NavController,
+    currentRoute: ScreenRoute?,
     composition: Composition?,
+    navigateTo: (ScreenRoute) -> Unit,
 ) {
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute: ScreenRoute? = backStackEntry?.toScreenRoute()
-
     BottomNavigation(
+        modifier = Modifier.fillMaxWidth(),
         backgroundColor = MaterialTheme.colors.surface,
     ) {
-        ScreenRoute.ROUTE_LIST.forEach { screenRoute ->
+        ROUTE_LIST.forEach { screenRoute ->
             BottomNavigationItem(
                 icon = {
                     Icon(
@@ -38,11 +38,11 @@ fun BottomNavBar(
                 },
                 label = { Text(text = stringResource(id = screenRoute.resourceId)) },
                 selected = currentRoute == screenRoute,
-                // TopScreenの場合は他のアイコン色を黒にする
+                // TopScreenの場合は他のアイコン色を無効色にする
                 unselectedContentColor = if (currentRoute == ScreenRoute.TopScreen) {
                     LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
                 } else {
-                    LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+                    LocalContentColor.current.copy(alpha = ContentAlpha.high)
                 },
                 selectedContentColor = MaterialTheme.colors.primary,
                 enabled = composition != null,
@@ -50,11 +50,23 @@ fun BottomNavBar(
                     currentRoute?.let { currentRoute ->
                         // 現在の画面のルートと異なる場合のみ遷移する
                         if (currentRoute != screenRoute) {
-                            navController.navigateSingle(screenRoute)
+                            navigateTo(screenRoute)
                         }
                     }
                 }
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun BottomNavBarPreview() {
+    AssemblePCTheme {
+        BottomNavBar(
+            currentRoute = ScreenRoute.TopScreen,
+            composition = Constants.COMPOSITION_SAMPLE,
+            navigateTo = {}
+        )
     }
 }

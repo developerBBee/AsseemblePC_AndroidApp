@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,8 +28,7 @@ import jp.developer.bbee.assemblepc.presentation.ScreenRoute.AssemblyScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.DeviceScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.SelectionScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.TopScreen
-import jp.developer.bbee.assemblepc.presentation.components.BottomNavBar
-import jp.developer.bbee.assemblepc.presentation.components.HeaderInfoBar
+import jp.developer.bbee.assemblepc.presentation.common.BaseLayout
 import jp.developer.bbee.assemblepc.presentation.screen.assembly.AssemblyScreen
 import jp.developer.bbee.assemblepc.presentation.screen.device.DeviceScreen
 import jp.developer.bbee.assemblepc.presentation.screen.selection.SelectionScreen
@@ -68,59 +65,49 @@ private fun AssemblePCApp(
     modifier: Modifier = Modifier,
     viewModel: AppViewModel = hiltViewModel()
 ) {
+    val scope = rememberCoroutineScope()
+    val navController = rememberNavController()
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val composition = (uiState as? AppUiState.Selected)?.composition
+
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute: ScreenRoute? = backStackEntry?.toScreenRoute()
+
     AssemblePCTheme {
-        val scope = rememberCoroutineScope()
-        val navController = rememberNavController()
-
-        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-        val composition = (uiState as? AppUiState.Selected)?.composition
-
-        Scaffold(
+        BaseLayout(
             modifier = modifier,
-            topBar = {
-                HeaderInfoBar(composition = composition)
-            },
-            bottomBar = {
-                BottomNavBar(
-                    navController = navController,
-                    composition = composition,
-                )
-            }
-        ) { innerPadding ->
-            // A surface container using the 'background' color from the theme
-            Surface(
-                modifier = Modifier
-                    .padding(paddingValues = innerPadding),
-                color = MaterialTheme.colors.background
+            currentRoute = currentRoute,
+            composition = composition,
+            navigateTo = { route -> navController.navigateSingle(route) }
+        ) {
+            NavHost(
+                navController = navController,
+                startDestination = TopScreen,
+                modifier = Modifier.fillMaxSize(),
             ) {
-                NavHost(
-                    navController = navController,
-                    startDestination = TopScreen,
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    composable<TopScreen> {
-                        TopScreen(
-                            navController = navController,
-                            scope = scope
-                        )
-                    }
+                composable<TopScreen> {
+                    TopScreen(
+                        navController = navController,
+                        scope = scope
+                    )
+                }
 
-                    composable<SelectionScreen> {
-                        SelectionScreen(navController = navController)
-                    }
+                composable<SelectionScreen> {
+                    SelectionScreen(navController = navController)
+                }
 
-                    composable<DeviceScreen> { entry ->
-                        val deviceType = entry.toRoute<DeviceScreen>().deviceType
-                        DeviceScreen(
-                            deviceType = deviceType,
-                            navController = navController,
-                            scope = scope
-                        )
-                    }
+                composable<DeviceScreen> { entry ->
+                    val deviceType = entry.toRoute<DeviceScreen>().deviceType
+                    DeviceScreen(
+                        deviceType = deviceType,
+                        navController = navController,
+                        scope = scope
+                    )
+                }
 
-                    composable<AssemblyScreen> {
-                        AssemblyScreen()
-                    }
+                composable<AssemblyScreen> {
+                    AssemblyScreen()
                 }
             }
         }

@@ -4,6 +4,7 @@ import jp.developer.bbee.assemblepc.data.remote.DeviceApi
 import jp.developer.bbee.assemblepc.data.remote.toIntUpdate
 import jp.developer.bbee.assemblepc.data.room.AssemblyDeviceDao
 import jp.developer.bbee.assemblepc.domain.model.Assembly
+import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.model.Device
 import jp.developer.bbee.assemblepc.domain.model.DeviceUpdate
 import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
@@ -62,20 +63,37 @@ class DeviceRepositoryImpl @Inject constructor(
         return assemblyDeviceDao.loadAssembly(assemblyId)
     }
 
-    override suspend fun loadAllAssembly(): List<Assembly> {
-        return assemblyDeviceDao.loadAllAssembly()
+    override suspend fun loadCompositions(): List<Composition> {
+        val assemblies = assemblyDeviceDao.loadAllAssembly()
+        val deviceIdList = assemblies.map { it.deviceId }
+        val devices = assemblyDeviceDao.loadDeviceByIds(deviceIdList)
+
+        if (assemblies.isEmpty() || devices.isEmpty()) {
+            return emptyList()
+        }
+
+        return assemblies
+            .groupBy { it.assemblyId }
+            .map { (assemblyId, assemblyList) ->
+                Composition.of(
+                    assemblyId = assemblyId,
+                    assemblyName = assemblyList.first().assemblyName,
+                    assemblies = assemblyList,
+                    devices = devices
+                )
+            }
     }
 
-    override suspend fun insertAssembly(assembly: Assembly) {
-        assemblyDeviceDao.insertAssembly(assembly)
+    override suspend fun insertAssemblies(assemblies: List<Assembly>) {
+        assemblyDeviceDao.insertAssemblies(assemblies)
     }
 
     override suspend fun loadMaxAssemblyId(): Int? {
         return assemblyDeviceDao.loadMaxAssemblyId()
     }
 
-    override suspend fun deleteAssembly(assembly: Assembly) {
-        assemblyDeviceDao.deleteAssembly(assembly)
+    override suspend fun deleteAssemblies(assemblies: List<Assembly>) {
+        assemblyDeviceDao.deleteAssembly(assemblies)
     }
 
     override suspend fun deleteAssemblyById(assemblyId: Int) {
@@ -100,6 +118,10 @@ class DeviceRepositoryImpl @Inject constructor(
 
     override suspend fun loadDevice(device: String): List<Device> {
         return assemblyDeviceDao.loadDevice(device)
+    }
+
+    override suspend fun loadDeviceByIds(deviceIds: List<String>): List<Device> {
+        return assemblyDeviceDao.loadDeviceByIds(deviceIds)
     }
 
     override suspend fun insertDevice(device: Device) {

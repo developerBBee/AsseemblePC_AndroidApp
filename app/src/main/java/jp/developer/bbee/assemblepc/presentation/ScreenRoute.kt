@@ -13,6 +13,10 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.navOptions
 import jp.developer.bbee.assemblepc.R
 import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
+import jp.developer.bbee.assemblepc.presentation.ScreenRoute.AssemblyScreen
+import jp.developer.bbee.assemblepc.presentation.ScreenRoute.DeviceScreen
+import jp.developer.bbee.assemblepc.presentation.ScreenRoute.SelectionScreen
+import jp.developer.bbee.assemblepc.presentation.ScreenRoute.TopScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -37,27 +41,25 @@ sealed class ScreenRoute(@StringRes val resourceId: Int) {
         is DeviceScreen -> Icons.AutoMirrored.Filled.ManageSearch
         is AssemblyScreen -> Icons.Default.Build
     }
-
-    companion object {
-        val ROUTE_LIST = listOf<ScreenRoute>(
-            TopScreen,
-            SelectionScreen,
-            DeviceScreen(),
-            AssemblyScreen
-        )
-    }
 }
+
+val ROUTE_LIST = listOf(
+    TopScreen,
+    SelectionScreen,
+    DeviceScreen(),
+    AssemblyScreen
+)
 
 fun NavBackStackEntry.toScreenRoute(): ScreenRoute? {
     // Lint check incorrectly in K2 mode https://issuetracker.google.com/issues/372175033
-    return ScreenRoute.ROUTE_LIST.firstOrNull { destination.hasRoute(it::class) }
+    return ROUTE_LIST.firstOrNull { destination.hasRoute(it::class) }
 }
 
 fun NavController.navigateSingle(screenRoute: ScreenRoute) {
     popBackStack(screenRoute, true)
-    if (screenRoute is ScreenRoute.DeviceScreen) {
+    if (screenRoute is DeviceScreen) {
         DeviceType.entries.forEach {
-            popBackStack(ScreenRoute.DeviceScreen(it), true)
+            popBackStack(DeviceScreen(it), true)
         }
     }
     val options = navOptions {

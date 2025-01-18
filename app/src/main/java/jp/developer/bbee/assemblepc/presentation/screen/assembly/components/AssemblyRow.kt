@@ -18,12 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import jp.developer.bbee.assemblepc.domain.model.Assembly
+import jp.developer.bbee.assemblepc.common.Constants
+import jp.developer.bbee.assemblepc.domain.model.CompositionItem
+import jp.developer.bbee.assemblepc.presentation.common.BaseBGPreview
+import jp.developer.bbee.assemblepc.presentation.components.MultipleTotalPrice
 
-private val deviceTextConvert = mapOf(
+private val DEVICE_TEXT_TABLE = mapOf(
     "pccase" to "PCケース",
     "motherboard" to "マザーボード",
     "powersupply" to "電源",
@@ -48,7 +52,7 @@ private val deviceTextConvert = mapOf(
 @Composable
 fun AssemblyRow(
     modifier: Modifier = Modifier,
-    assembly: Assembly,
+    item: CompositionItem,
     onAssemblyClick: () -> Unit,
 ) {
 
@@ -65,16 +69,18 @@ fun AssemblyRow(
                     .clickable { onAssemblyClick() },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                DeviceImage(
-                    imgUrl = assembly.deviceImgUrl,
+                AsyncImage(
+                    model = item.deviceImgUrl,
                     modifier = Modifier
                         .padding(5.dp)
                         .height(80.dp)
-                        .width(80.dp)
+                        .width(80.dp),
+                    contentDescription = "製品画像"
                 )
 
+                // 製品名
                 Text(
-                    text = assembly.deviceName,
+                    text = item.deviceName,
                     modifier = Modifier
                         .padding(10.dp)
                         .weight(1f),
@@ -82,9 +88,12 @@ fun AssemblyRow(
                     softWrap = true,
                 )
 
+                // 単価
                 Text(
-                    text = assembly.devicePriceRecent.yenOrUnknown(),
-                    modifier = Modifier.padding(10.dp),
+                    text = item.devicePriceRecent.yenOrUnknown(),
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .offset(y = (-20).dp),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -98,24 +107,38 @@ fun AssemblyRow(
             backgroundColor = MaterialTheme.colors.secondary
         ) {
             Text(
-                text = deviceTextConvert.getOrDefault(assembly.deviceType, "???"),
+                text = DEVICE_TEXT_TABLE.getOrDefault(item.deviceType, "???"),
                 modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 2.dp),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             )
         }
+
+        MultipleTotalPrice(quantity = item.quantity, price = item.devicePriceRecent)
     }
 }
 
+@Preview
 @Composable
-fun DeviceImage(
-    imgUrl: String,
-    modifier: Modifier = Modifier
-) {
-    AsyncImage(
-        model = imgUrl,
-        modifier = modifier,
-        contentDescription = "製品画像"
-    )
+private fun AssemblyRowPreview(modifier: Modifier = Modifier) {
+    BaseBGPreview {
+        AssemblyRow(
+            modifier = modifier,
+            item = Constants.COMPOSITION_SAMPLE.items.first(),
+            onAssemblyClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun MultiAssemblyRowPreview(modifier: Modifier = Modifier) {
+    BaseBGPreview {
+        AssemblyRow(
+            modifier = modifier,
+            item = Constants.COMPOSITION_SAMPLE.items.first().copy(quantity = 3),
+            onAssemblyClick = {}
+        )
+    }
 }

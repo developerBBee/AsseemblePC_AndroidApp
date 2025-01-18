@@ -39,7 +39,7 @@ private fun HeaderContent(
     composition: Composition
 ) {
     val assemblyName = composition.assemblyName
-    val totalPriceText = composition.items.map { it.devicePriceRecent }.sumYen()
+    val totalPriceText = composition.items.map { it.devicePriceRecent * it.quantity }.sumYen()
 
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val fontSize = if (screenWidth < 600) 18.sp else 24.sp

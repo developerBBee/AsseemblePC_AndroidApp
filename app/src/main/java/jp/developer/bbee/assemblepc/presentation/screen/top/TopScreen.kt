@@ -84,12 +84,21 @@ fun TopScreen(
                 onStartButtonClick = { topViewModel.showCreateDialog() }
             )
         }
+
+        is TopUiState.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = state.error ?: "エラーが発生しました")
+            }
+        }
     }
 
     when (val state = dialogUiState) {
         is TopDialogUiState.ShowCreate -> {
             CreateAssemblyDialog(
-                onDismiss = { topViewModel.closeDialog() },
+                onDismiss = { topViewModel.clearDialog() },
                 onCreationStart = { name -> topViewModel.createNewComposition(name) }
             )
         }
@@ -98,7 +107,7 @@ fun TopScreen(
             val composition = state.compo
             EditAssemblyDialog(
                 selectedName = composition.assemblyName,
-                onDismiss = { topViewModel.closeDialog() },
+                onDismiss = { topViewModel.clearDialog() },
                 onAddParts = { topViewModel.addParts(composition) },
                 onShowComposition = { topViewModel.showComposition(composition) },
                 onRenameClick = { newName -> topViewModel.showRenameConfirm(composition, newName) },
@@ -113,7 +122,7 @@ fun TopScreen(
             RenameAssemblyConfirmDialog(
                 selectedName = selectedName,
                 newName = newName,
-                onDismiss = { topViewModel.closeDialog() },
+                onDismiss = { topViewModel.clearDialog() },
                 onConfirm = { topViewModel.renameAssembly(newName, assemblyId) }
             )
         }
@@ -123,7 +132,7 @@ fun TopScreen(
             val selectedName = state.compo.assemblyName
             DeleteAssemblyConfirmDialog(
                 selectedName = selectedName,
-                onDismiss = { topViewModel.closeDialog() },
+                onDismiss = { topViewModel.clearDialog() },
                 onConfirm = {
                     topViewModel.deleteAssembly(state.compo.assemblyId) {
                         Toast.makeText(
@@ -179,7 +188,7 @@ private fun TopScreenContent(
         ) {
             items(allComposition) { composition ->
                 AssemblyThumbnail(
-                    assemblies = composition.items,
+                    composition = composition,
                     onClick = { onCompositionClick(composition) }
                 )
             }
