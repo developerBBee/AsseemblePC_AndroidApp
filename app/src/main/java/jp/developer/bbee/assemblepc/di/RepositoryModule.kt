@@ -8,9 +8,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import jp.developer.bbee.assemblepc.data.remote.DeviceApi
 import jp.developer.bbee.assemblepc.data.repository.CurrentCompositionRepositoryImpl
+import jp.developer.bbee.assemblepc.data.repository.CurrentDeviceTypeRepositoryImpl
 import jp.developer.bbee.assemblepc.data.repository.DeviceRepositoryImpl
 import jp.developer.bbee.assemblepc.data.room.AssemblyDeviceDao
 import jp.developer.bbee.assemblepc.domain.repository.CurrentCompositionRepository
+import jp.developer.bbee.assemblepc.domain.repository.CurrentDeviceTypeRepository
 import jp.developer.bbee.assemblepc.domain.repository.DeviceRepository
 import javax.inject.Singleton
 
@@ -27,7 +29,13 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideCurrentAssemblyIdRepository(
+    fun provideCurrentCompositionRepository(
         @ApplicationContext context: Context,
     ): CurrentCompositionRepository = CurrentCompositionRepositoryImpl(context)
+
+    @Provides
+    @Singleton
+    fun provideCurrentDeviceTypeRepository(
+        @ApplicationContext context: Context,
+    ): CurrentDeviceTypeRepository = CurrentDeviceTypeRepositoryImpl(context)
 }

@@ -14,6 +14,7 @@ import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
 import jp.developer.bbee.assemblepc.domain.use_case.AddAssemblyUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.DeleteAssemblyUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetCurrentCompositionUseCase
+import jp.developer.bbee.assemblepc.domain.use_case.GetCurrentDeviceTypeUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetDeviceUseCase
 import jp.developer.bbee.assemblepc.presentation.screen.device.components.SortType
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -25,16 +26,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DeviceViewModel @Inject constructor(
     getCurrentCompositionUseCase: GetCurrentCompositionUseCase,
+    getCurrentDeviceTypeUseCase: GetCurrentDeviceTypeUseCase,
     private val getDeviceUseCase: GetDeviceUseCase,
     private val addAssemblyUseCase: AddAssemblyUseCase,
     private val deleteAssemblyUseCase: DeleteAssemblyUseCase,
@@ -69,10 +74,19 @@ class DeviceViewModel @Inject constructor(
                     }
                 }
             }
+            .catch { handleError(it) }
+            .launchIn(viewModelScope)
+
+        compositionFlow
+            .filterNotNull()
+            .map { getCurrentDeviceTypeUseCase().first() }
+            .onEach { getDeviceList(it) }
+            .take(1)
+            .catch { handleError(it) }
             .launchIn(viewModelScope)
     }
 
-    fun getDeviceList(deviceType: DeviceType) {
+    private fun getDeviceList(deviceType: DeviceType) {
         if (uiState.value is DeviceUiState.Error) return
 
         deviceJob = getDeviceUseCase(deviceType).onEach {
@@ -95,7 +109,9 @@ class DeviceViewModel @Inject constructor(
                     _uiState.value = DeviceUiState.Error(it.error)
                 }
             }
-        }.launchIn(viewModelScope)
+        }
+            .catch { handleError(it) }
+            .launchIn(viewModelScope)
     }
 
     fun changeSortType(sort: SortType) {

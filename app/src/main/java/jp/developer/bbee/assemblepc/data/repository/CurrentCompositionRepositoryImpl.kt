@@ -19,21 +19,21 @@ class CurrentCompositionRepositoryImpl @Inject constructor(
     override val currentCompositionFlow = getCurrentComposition()
 
     override suspend fun saveCurrentComposition(composition: Composition) {
-        context.dataStore.edit { settings ->
-            settings[CURRENT_COMPOSITION_KEY] = defaultJson.encodeToString(composition)
+        context.dataStore.edit { prefs ->
+            prefs[CURRENT_COMPOSITION_KEY] = defaultJson.encodeToString(composition)
         }
     }
 
     override suspend fun clearCurrentComposition() {
-        context.dataStore.edit { settings ->
-            settings.remove(CURRENT_COMPOSITION_KEY)
+        context.dataStore.edit { prefs ->
+            prefs.remove(CURRENT_COMPOSITION_KEY)
         }
     }
 
     private fun getCurrentComposition(): Flow<Composition?> =
         context.dataStore.data
-            .map { pref ->
-                pref[CURRENT_COMPOSITION_KEY]
+            .map { prefs ->
+                prefs[CURRENT_COMPOSITION_KEY]
                     ?.let { defaultJson.decodeFromString<Composition>(it) }
             }
             .catch { _ ->

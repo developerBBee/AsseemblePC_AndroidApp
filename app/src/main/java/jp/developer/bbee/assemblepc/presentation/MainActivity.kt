@@ -22,7 +22,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.AssemblyScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.DeviceScreen
@@ -94,13 +93,14 @@ private fun AssemblePCApp(
                 }
 
                 composable<SelectionScreen> {
-                    SelectionScreen(navController = navController)
+                    SelectionScreen(
+                        navController = navController,
+                        scope = scope
+                    )
                 }
 
-                composable<DeviceScreen> { entry ->
-                    val deviceType = entry.toRoute<DeviceScreen>().deviceType
+                composable<DeviceScreen> {
                     DeviceScreen(
-                        deviceType = deviceType,
                         navController = navController,
                         scope = scope
                     )

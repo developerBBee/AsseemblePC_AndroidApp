@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class Device(
     @PrimaryKey val id: String,
-    val device: String,
+    val device: String, // DeviceTypeのkeyになる
     val name: String,
     val imgurl: String,
     val url: String,
