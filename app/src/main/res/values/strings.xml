@@ -30,6 +30,7 @@
     <string name="label_device_selected">選択中のパーツ</string>
     <string name="title_edit_assembly">構成の編集</string>
     <string name="title_add_assembly">構成に追加しますか？</string>
+    <string name="label_link_to_website">価格サイトで\nチェック</string>
     <string name="label_cancel">キャンセル</string>
     <string name="label_add">追加</string>
     <string name="label_change">変更</string>

@@ -16,7 +16,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +30,6 @@ import jp.developer.bbee.assemblepc.R
 import jp.developer.bbee.assemblepc.presentation.common.BasePreview
 import jp.developer.bbee.assemblepc.common.Constants
 import jp.developer.bbee.assemblepc.domain.model.Device
-import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute
 import jp.developer.bbee.assemblepc.presentation.navigateSingle
 import jp.developer.bbee.assemblepc.presentation.components.AssemblyDialog
@@ -42,18 +40,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun DeviceScreen(
-    deviceType: DeviceType,
     navController: NavController,
     scope: CoroutineScope,
     deviceViewModel: DeviceViewModel = hiltViewModel(),
 ) {
-
-    LaunchedEffect(deviceType) {
-        // TODO
-        //  現状はNavigationパラメータでdeviceTypeを受け取っているが、
-        //  選択したdeviceTypeをリポジトリに保存して、Flowで取得するように変更する方がUIがシンプルになる
-        deviceViewModel.getDeviceList(deviceType)
-    }
 
     DisposableEffect(Unit) {
         val job = scope.launch {

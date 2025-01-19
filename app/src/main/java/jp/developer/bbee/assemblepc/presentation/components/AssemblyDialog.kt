@@ -14,6 +14,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -21,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +44,8 @@ fun AssemblyDialog(
     onAddAssembly: (Device, Int, Boolean) -> Unit,
     onDeleteAssembly: (Device, Int) -> Unit,
 ) {
+
+    val uriHandler = LocalUriHandler.current
 
     var editQuantity by rememberSaveable { mutableIntStateOf(quantity) }
 
@@ -106,10 +110,23 @@ fun AssemblyDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.End
             ) {
-                NumberEditor(
-                    value = editQuantity,
-                    onValueChange = { editQuantity = it }
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    TextButton(
+                        onClick = { uriHandler.openUri(device.url) },
+                    ) {
+                        Text(
+                            fontWeight = FontWeight.ExtraBold,
+                            text = stringResource(R.string.label_link_to_website),
+                        )
+                    }
+                    NumberEditor(
+                        value = editQuantity,
+                        onValueChange = { editQuantity = it }
+                    )
+                }
 
                 Row(modifier = Modifier.padding(10.dp)) {
                     Spacer(modifier = Modifier.weight(1f))

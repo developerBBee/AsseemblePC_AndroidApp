@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.use_case.ClearCurrentCompositionUseCase
+import jp.developer.bbee.assemblepc.domain.use_case.ClearCurrentDeviceTypeUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetCurrentCompositionUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class AppViewModel @Inject constructor(
     getCurrentCompositionUseCase: GetCurrentCompositionUseCase,
     clearCurrentCompositionUseCase: ClearCurrentCompositionUseCase,
+    clearCurrentDeviceTypeUseCase: ClearCurrentDeviceTypeUseCase,
 ) : ViewModel() {
     private val handler = CoroutineExceptionHandler { _, ex -> handleError() }
 
@@ -28,6 +30,11 @@ class AppViewModel @Inject constructor(
     val uiState: StateFlow<AppUiState> = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch(handler) {
+            // アプリが立ち上がった時に、DeviceTypeの選択状態をクリアする
+            clearCurrentDeviceTypeUseCase()
+        }
+
         val job = viewModelScope.launch(handler) {
             // アプリが立ち上がった時に、空の構成が選択されている場合はクリアする
             val composition = getCurrentCompositionUseCase().first()

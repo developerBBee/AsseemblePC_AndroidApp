@@ -12,7 +12,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.navOptions
 import jp.developer.bbee.assemblepc.R
-import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.AssemblyScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.DeviceScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.SelectionScreen
@@ -28,9 +27,7 @@ sealed class ScreenRoute(@StringRes val resourceId: Int) {
     data object SelectionScreen : ScreenRoute(R.string.selection_screen)
 
     @Serializable
-    data class DeviceScreen(
-        val deviceType: DeviceType = DeviceType.PC_CASE
-    ) : ScreenRoute(R.string.device_screen)
+    data object DeviceScreen : ScreenRoute(R.string.device_screen)
 
     @Serializable
     data object AssemblyScreen : ScreenRoute(R.string.assembly_screen)
@@ -46,7 +43,7 @@ sealed class ScreenRoute(@StringRes val resourceId: Int) {
 val ROUTE_LIST = listOf(
     TopScreen,
     SelectionScreen,
-    DeviceScreen(),
+    DeviceScreen,
     AssemblyScreen
 )
 
@@ -57,11 +54,7 @@ fun NavBackStackEntry.toScreenRoute(): ScreenRoute? {
 
 fun NavController.navigateSingle(screenRoute: ScreenRoute) {
     popBackStack(screenRoute, true)
-    if (screenRoute is DeviceScreen) {
-        DeviceType.entries.forEach {
-            popBackStack(DeviceScreen(it), true)
-        }
-    }
+
     val options = navOptions {
         launchSingleTop = true
     }

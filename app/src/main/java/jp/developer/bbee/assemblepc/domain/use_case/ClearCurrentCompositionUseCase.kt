@@ -4,10 +4,10 @@ import jp.developer.bbee.assemblepc.domain.repository.CurrentCompositionReposito
 import javax.inject.Inject
 
 class ClearCurrentCompositionUseCase @Inject constructor(
-    private val currentRepository: CurrentCompositionRepository,
+    private val repository: CurrentCompositionRepository,
 ) {
 
     suspend operator fun invoke() {
-        currentRepository.clearCurrentComposition()
+        repository.clearCurrentComposition()
     }
 }
