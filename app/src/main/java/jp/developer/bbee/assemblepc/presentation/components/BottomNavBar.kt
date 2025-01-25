@@ -10,7 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import jp.developer.bbee.assemblepc.common.Constants
 import jp.developer.bbee.assemblepc.domain.model.Composition
@@ -30,13 +30,14 @@ fun BottomNavBar(
     ) {
         ROUTE_LIST.forEach { screenRoute ->
             BottomNavigationItem(
+                modifier = Modifier.testTag(screenRoute.javaClass.simpleName),
                 icon = {
                     Icon(
                         imageVector = screenRoute.getIcon(),
                         contentDescription = "ナビゲーションアイコン"
                     )
                 },
-                label = { Text(text = stringResource(id = screenRoute.resourceId)) },
+                label = { Text(text = screenRoute.name()) },
                 selected = currentRoute == screenRoute,
                 // TopScreenの場合は他のアイコン色を無効色にする
                 unselectedContentColor = if (currentRoute == ScreenRoute.TopScreen) {

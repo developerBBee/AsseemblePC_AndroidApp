@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +48,7 @@ private fun ThumbnailContents(
             .height(300.dp)
             .border(3.dp, Color.LightGray)
             .clickable { onClick() }
+            .testTag(composition.assemblyName)
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(10.dp)

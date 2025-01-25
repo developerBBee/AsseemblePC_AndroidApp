@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,13 +35,14 @@ fun BoxScope.MultipleTotalPrice(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .offset(x = (-10).dp, y = (-5).dp)
-                .clip(shape = RoundedCornerShape(2.dp)),
+                .clip(shape = RoundedCornerShape(2.dp))
+                .testTag("multiple_total_price"),
             backgroundColor = MaterialTheme.colors.primaryVariant
         ) {
             Text(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                 text = text,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.ExtraBold
             )

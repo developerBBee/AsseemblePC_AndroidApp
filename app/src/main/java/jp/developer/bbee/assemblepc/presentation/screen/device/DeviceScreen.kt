@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -135,7 +136,11 @@ private fun DeviceItems(
                 ) {
                     Text(text = stringResource(R.string.label_device_selected), color = Color.White)
 
-                    LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .background(MaterialTheme.colors.background)
+                            .testTag("selected_parts_list")
+                    ) {
                         items(devices) { deviceQty ->
                             DeviceRow(device = deviceQty.device, quantity = deviceQty.quantity) {
                                 onSelectedDeviceClick(deviceQty)
@@ -145,7 +150,11 @@ private fun DeviceItems(
                 }
             }
 
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .testTag("unselected_parts_list")
+            ) {
                 items(unselectedDevices) { device ->
                     DeviceRow(device = device) {
                         onUnselectedDeviceClick(device)

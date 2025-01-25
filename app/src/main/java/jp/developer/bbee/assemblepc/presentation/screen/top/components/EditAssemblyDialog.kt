@@ -16,11 +16,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import jp.developer.bbee.assemblepc.BuildConfig
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EditAssemblyDialog(
     selectedName: String,
@@ -35,6 +41,7 @@ fun EditAssemblyDialog(
     val changeNameButtonEnable = (newName != selectedName) && newName.isNotEmpty()
 
     AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = BuildConfig.DEBUG },
         shape = RoundedCornerShape(10.dp),
         onDismissRequest = onDismiss,
         title = {
@@ -83,11 +90,17 @@ fun EditAssemblyDialog(
             ) {
                 // 左側ボタン（上：構成を削除　下：キャンセル）
                 Column {
-                    Button(onClick = onDeleteClick) {
+                    Button(
+                        modifier = Modifier.testTag("delete_assembly_button"),
+                        onClick = onDeleteClick
+                    ) {
                         Text(text = "構成を削除")
                     }
 
-                    Button(onClick = onDismiss) {
+                    Button(
+                        modifier = Modifier.testTag("cancel_assembly_dialog_button"),
+                        onClick = onDismiss
+                    ) {
                         Text(text = "キャンセル")
                     }
                 }
@@ -95,14 +108,18 @@ fun EditAssemblyDialog(
                 // 右側ボタン（上：パーツを追加　下：構成確認）
                 Column {
                     Button(
-                        modifier = Modifier.align(Alignment.End),
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .testTag("add_parts_button"),
                         onClick = onAddParts
                     ) {
                         Text(text = "パーツを追加")
                     }
 
                     Button(
-                        modifier = Modifier.align(Alignment.End),
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .testTag("show_assembly_button"),
                         onClick = onShowComposition
                     ) {
                         Text(text = "構成確認")

@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -39,6 +40,7 @@ fun NumberEditor(
             onClick = { onValueChange((value - 1).coerceAtLeast(0)) }
         ) {
             Icon(
+                modifier = Modifier.testTag("minus_button"),
                 imageVector = Icons.Default.ExposureNeg1,
                 contentDescription = "マイナスボタン",
                 tint = Color.Blue,
@@ -58,6 +60,7 @@ fun NumberEditor(
             onClick = { onValueChange((value + 1).coerceAtMost(99)) }
         ) {
             Icon(
+                modifier = Modifier.testTag("plus_button"),
                 imageVector = Icons.Default.ExposurePlus1,
                 contentDescription = "プラスボタン",
                 tint = Color.Red,

@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -204,6 +205,7 @@ private fun TopScreenContent(
                 .align(Alignment.BottomCenter)
         ) {
             Text(
+                modifier = Modifier.testTag("start_button"),
                 text = "構成を新規作成",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,

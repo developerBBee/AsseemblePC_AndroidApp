@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,7 +52,8 @@ fun VariableButtonsRow (onSelected: (DeviceType) -> Unit) {
                             modifier = Modifier
                                 .width(160.dp)
                                 .height(120.dp)
-                                .clip(shape = RoundedCornerShape(20.dp)),
+                                .clip(shape = RoundedCornerShape(20.dp))
+                                .testTag(type.key),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = MaterialTheme.colors.primary,
                             ),

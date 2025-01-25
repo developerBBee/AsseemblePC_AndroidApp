@@ -6,7 +6,9 @@ import androidx.compose.material.icons.automirrored.filled.ManageSearch
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -38,6 +40,9 @@ sealed class ScreenRoute(@StringRes val resourceId: Int) {
         is DeviceScreen -> Icons.AutoMirrored.Filled.ManageSearch
         is AssemblyScreen -> Icons.Default.Build
     }
+
+    @Composable
+    fun name(): String = stringResource(resourceId)
 }
 
 val ROUTE_LIST = listOf(
