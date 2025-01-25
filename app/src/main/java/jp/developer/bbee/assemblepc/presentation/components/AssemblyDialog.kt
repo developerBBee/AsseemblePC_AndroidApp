@@ -21,20 +21,26 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import jp.developer.bbee.assemblepc.BuildConfig
 import jp.developer.bbee.assemblepc.R
 import jp.developer.bbee.assemblepc.presentation.common.BasePreview
 import jp.developer.bbee.assemblepc.common.Constants
 import jp.developer.bbee.assemblepc.domain.model.Device
 import jp.developer.bbee.assemblepc.presentation.screen.device.components.NumberEditor
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AssemblyDialog(
     isEdit: Boolean,
@@ -68,6 +74,7 @@ fun AssemblyDialog(
     }.let { stringResource(it) }
 
     AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = BuildConfig.DEBUG },
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(10.dp),
         title = {
@@ -136,7 +143,8 @@ fun AssemblyDialog(
                     }
 
                     Button(
-                        modifier = Modifier.padding(horizontal = 10.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                            .testTag("edit_assembly_button"),
                         enabled = (diffQty != 0),
                         onClick = {
                             if (isEdit) {

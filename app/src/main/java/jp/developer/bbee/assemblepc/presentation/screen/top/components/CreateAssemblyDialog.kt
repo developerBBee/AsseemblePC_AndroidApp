@@ -15,11 +15,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import jp.developer.bbee.assemblepc.BuildConfig
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CreateAssemblyDialog(
     onDismiss: () -> Unit,
@@ -28,6 +34,8 @@ fun CreateAssemblyDialog(
     var assemblyName: String by remember { mutableStateOf("") }
 
     AlertDialog(
+        modifier = Modifier
+            .semantics { testTagsAsResourceId = BuildConfig.DEBUG },
         shape = RoundedCornerShape(10.dp),
         onDismissRequest = onDismiss,
         title = {
@@ -46,7 +54,9 @@ fun CreateAssemblyDialog(
                 TextField(
                     value = assemblyName,
                     onValueChange = { if (it.length <= 20) assemblyName = it },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("assembly_name_text_field"),
                     placeholder = { Text(text = "構成名称") },
                     maxLines = 1,
                     singleLine = true,
@@ -61,7 +71,9 @@ fun CreateAssemblyDialog(
                     Text(text = "キャンセル")
                 }
                 Button(
-                    modifier = Modifier.padding(horizontal = 15.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
+                        .testTag("create_assembly_button"),
                     onClick = { onCreationStart(assemblyName) }
                 ) {
                     Text(text = "新規作成")

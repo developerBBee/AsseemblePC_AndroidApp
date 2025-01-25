@@ -15,7 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -23,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import jp.developer.bbee.assemblepc.BuildConfig
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.AssemblyScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.DeviceScreen
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute.SelectionScreen
@@ -36,6 +40,7 @@ import jp.developer.bbee.assemblepc.presentation.ui.theme.AssemblePCTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -54,7 +59,11 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
-            AssemblePCApp(modifier = Modifier.padding(WindowInsets.systemBars.asPaddingValues()))
+            AssemblePCApp(
+                modifier = Modifier
+                    .padding(WindowInsets.systemBars.asPaddingValues())
+                    .semantics { testTagsAsResourceId = BuildConfig.DEBUG }
+            )
         }
     }
 }
