@@ -90,7 +90,7 @@ fun DeviceScreen(
                         .weight(1f)
                         .fillMaxWidth(),
                     selectedDevices = state.selectedDevices,
-                    unselectedDevices = state.devices
+                    unselectedDevices = state.visibleDevices
                         .filterNot {
                             state.selectedDevices
                                 .map { d -> d.device }
