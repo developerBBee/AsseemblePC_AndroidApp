@@ -143,7 +143,8 @@ fun AssemblyDialog(
                     }
 
                     Button(
-                        modifier = Modifier.padding(horizontal = 10.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
                             .testTag("edit_assembly_button"),
                         enabled = (diffQty != 0),
                         onClick = {
@@ -164,7 +165,9 @@ fun AssemblyDialog(
                     if (isEdit) {
                         // 全削除ボタン
                         Button(
-                            modifier = Modifier.padding(end = 10.dp),
+                            modifier = Modifier
+                                .padding(end = 10.dp)
+                                .testTag("delete_assembly_button"),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = MaterialTheme.colors.error
                             ),
