@@ -47,6 +47,7 @@ class DeviceViewModel @Inject constructor(
     private val handler = CoroutineExceptionHandler { _, ex -> handleError(ex) }
 
     private val compositionFlow = MutableStateFlow<Composition?>(null)
+    private val devicesFlow = MutableStateFlow<List<Device>>(emptyList())
 
     private val _uiState = MutableStateFlow<DeviceUiState>(DeviceUiState.Loading)
     val uiState: StateFlow<DeviceUiState> = _uiState.asStateFlow()
@@ -98,6 +99,7 @@ class DeviceViewModel @Inject constructor(
                 is AppResponse.Success -> {
                     val deviceList = it.data ?: emptyList()
 
+                    devicesFlow.value = deviceList
                     _uiState.value = DeviceUiState.Success(
                         deviceType = deviceType,
                         devices = deviceList,
@@ -128,62 +130,13 @@ class DeviceViewModel @Inject constructor(
     ) {
         val successState = uiState.value as? DeviceUiState.Success ?: return
 
-        val devices = successState.devices
         val sort = newSort ?: successState.currentDeviceSort
         val searchText = newSearch ?: successState.searchText
 
-        val searchList = createSearchList(searchText)
-
         _uiState.value = successState.copy(
-            devices = when (sort) {
-                SortType.POPULARITY -> devices.sortedBy { if (it.rank > 0) it.rank else Int.MAX_VALUE }
-                SortType.NEW_ARRIVAL -> devices.sortedByDescending { it.releasedate }
-                SortType.PRICE_ASC -> devices.sortedBy { if (it.price > 0) it.price else MAX_PRICE }
-                SortType.PRICE_DESC -> devices.sortedByDescending { if (it.price > 0) it.price else ZERO_PRICE }
-            }.filter { device ->
-                searchList.all { search ->
-                    device.name.contains(other = search, ignoreCase = true)
-                            || device.detail.contains(other = search, ignoreCase = true)
-                }
-            },
             searchText = searchText,
             currentDeviceSort = sort,
         )
-    }
-
-    // TODO StringUtil関数へ
-    private fun createSearchList(searchText: String): List<String> {
-        return searchText
-            .trim()
-            .replace("　", " ")
-            .split("\\s+".toRegex())
-            .map { convertToFullWidthKatakana(it) }
-    }
-
-    // TODO StringUtil関数へ
-    private fun convertToFullWidthKatakana(input: String): String {
-        val sb = StringBuilder()
-        for (i in input.indices) {
-            val c1 = input[i]
-            if (c1 == 'ﾞ' || c1 == 'ﾟ') continue // 濁音、半濁音はskip
-
-            if (i < input.length -1) {
-                val c2 = input[i+1]
-                val str = c1.toString() + c2.toString()
-                if ((c2 == 'ﾞ' || c2 == 'ﾟ') && KANA_HALF_TO_FULL.keys.contains(str)) {
-                    sb.append(mapKanaHalfToFull(str))
-                } else {
-                    sb.append(mapKanaHalfToFull(c1.toString()))
-                }
-            } else {
-                sb.append(mapKanaHalfToFull(c1.toString()))
-            }
-        }
-        return sb.toString()
-    }
-
-    private fun mapKanaHalfToFull(input: String): String {
-        return KANA_HALF_TO_FULL[input] ?: input
     }
 
     fun notifyDeviceSelected(device: Device) {
@@ -261,11 +214,17 @@ sealed interface DeviceUiState {
 
     data class Success(
         val deviceType: DeviceType = DeviceType.PC_CASE,
-        val devices: List<Device>,
+        private val devices: List<Device>,
         val searchText: String = "",
         val currentDeviceSort: SortType = SortType.POPULARITY,
         val composition: Composition,
     ) : DeviceUiState {
+
+        private val searchList = searchText
+            .trim()
+            .replace("　", " ")
+            .split("\\s+".toRegex())
+            .map { convertToFullWidthKatakana(it) }
 
         val selectedDevices: List<DeviceWithQty> = composition.items
             .filter { it.deviceType == deviceType.key }
@@ -273,6 +232,43 @@ sealed interface DeviceUiState {
                 devices.firstOrNull { item.deviceId == it.id }
                     ?.let { device -> DeviceWithQty(device, item.quantity) }
             }
+
+        val visibleDevices: List<Device> = when (currentDeviceSort) {
+            SortType.POPULARITY -> devices.sortedBy { if (it.rank > 0) it.rank else Int.MAX_VALUE }
+            SortType.NEW_ARRIVAL -> devices.sortedByDescending { it.releasedate }
+            SortType.PRICE_ASC -> devices.sortedBy { if (it.price > 0) it.price else MAX_PRICE }
+            SortType.PRICE_DESC -> devices.sortedByDescending { if (it.price > 0) it.price else ZERO_PRICE }
+        }.filter { device ->
+            searchList.all { search ->
+                device.name.contains(other = search, ignoreCase = true)
+                        || device.detail.contains(other = search, ignoreCase = true)
+            }
+        }
+
+        private fun convertToFullWidthKatakana(input: String): String {
+            val sb = StringBuilder()
+            for (i in input.indices) {
+                val c1 = input[i]
+                if (c1 == 'ﾞ' || c1 == 'ﾟ') continue // 濁音、半濁音はskip
+
+                if (i < input.length -1) {
+                    val c2 = input[i+1]
+                    val str = c1.toString() + c2.toString()
+                    if ((c2 == 'ﾞ' || c2 == 'ﾟ') && KANA_HALF_TO_FULL.keys.contains(str)) {
+                        sb.append(mapKanaHalfToFull(str))
+                    } else {
+                        sb.append(mapKanaHalfToFull(c1.toString()))
+                    }
+                } else {
+                    sb.append(mapKanaHalfToFull(c1.toString()))
+                }
+            }
+            return sb.toString()
+        }
+
+        private fun mapKanaHalfToFull(input: String): String {
+            return KANA_HALF_TO_FULL[input] ?: input
+        }
     }
 
     data class Error(val error: String?) : DeviceUiState
