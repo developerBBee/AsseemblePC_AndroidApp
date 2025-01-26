@@ -22,9 +22,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import jp.developer.bbee.assemblepc.BuildConfig
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SortMenu(
     currentSortType: SortType,
@@ -36,6 +42,7 @@ fun SortMenu(
         contentAlignment = Alignment.BottomEnd
     ) {
         IconButton(
+            modifier = Modifier.testTag("sort_menu_button"),
             onClick = { isExpanded = true }) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
@@ -54,6 +61,9 @@ fun SortMenu(
                 for(sortType: SortType in SortType.entries) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween) {
                         DropdownMenuItem(
+                            modifier = Modifier
+                                .semantics { testTagsAsResourceId = BuildConfig.DEBUG }
+                                .testTag(sortType.name),
                             onClick = {
                                 isExpanded = false
                                 onSortChanged(sortType)

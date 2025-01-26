@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 
 @Composable
@@ -34,8 +35,10 @@ fun DeviceSearchText(
 
     Box(modifier = modifier) {
         OutlinedTextField(
-            modifier = Modifier.fillMaxSize()
-                .onFocusChanged { hasFocus = it.isFocused },
+            modifier = Modifier
+                .fillMaxSize()
+                .onFocusChanged { hasFocus = it.isFocused }
+                .testTag("search_text_field"),
             value = currentSearchText,
             label = {
                 Row {

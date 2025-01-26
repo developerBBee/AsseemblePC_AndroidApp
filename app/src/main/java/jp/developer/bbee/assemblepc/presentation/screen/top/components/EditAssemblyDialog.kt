@@ -91,14 +91,14 @@ fun EditAssemblyDialog(
                 // 左側ボタン（上：構成を削除　下：キャンセル）
                 Column {
                     Button(
-                        modifier = Modifier.testTag("delete_assembly_button"),
+                        modifier = Modifier.testTag("delete_composition_button"),
                         onClick = onDeleteClick
                     ) {
                         Text(text = "構成を削除")
                     }
 
                     Button(
-                        modifier = Modifier.testTag("cancel_assembly_dialog_button"),
+                        modifier = Modifier.testTag("cancel_composition_dialog_button"),
                         onClick = onDismiss
                     ) {
                         Text(text = "キャンセル")
