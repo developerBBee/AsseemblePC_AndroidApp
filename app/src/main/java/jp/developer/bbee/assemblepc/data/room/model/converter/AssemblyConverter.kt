@@ -2,9 +2,10 @@ package jp.developer.bbee.assemblepc.data.room.model.converter
 
 import jp.developer.bbee.assemblepc.data.room.model.Assembly as DataAssembly
 import jp.developer.bbee.assemblepc.domain.model.Assembly
+import java.time.LocalDateTime
 
 object AssemblyConverter {
-    private fun Assembly.toData(): DataAssembly = DataAssembly(
+    fun Assembly.toData(): DataAssembly = DataAssembly(
         id = id,
         assemblyId = assemblyId,
         assemblyName = assemblyName,
@@ -15,6 +16,9 @@ object AssemblyConverter {
         deviceDetail = deviceDetail,
         devicePriceSaved = devicePriceSaved,
         devicePriceRecent = devicePriceRecent,
+        reviewText = reviewText,
+        reviewTime = reviewTime?.toString(),
+        updatedAt = updatedAt.toString()
     )
 
     fun List<Assembly>.toData(): List<DataAssembly> = map { it.toData() }
@@ -30,6 +34,9 @@ object AssemblyConverter {
         deviceDetail = deviceDetail,
         devicePriceSaved = devicePriceSaved,
         devicePriceRecent = devicePriceRecent,
+        reviewText = reviewText,
+        reviewTime = reviewTime?.let(LocalDateTime::parse),
+        updatedAt = LocalDateTime.parse(updatedAt)
     )
 
     fun List<DataAssembly>.toDomain(): List<Assembly> = map { it.toDomain() }

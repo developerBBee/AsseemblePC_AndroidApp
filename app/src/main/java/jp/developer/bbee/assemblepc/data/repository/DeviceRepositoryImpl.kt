@@ -11,6 +11,7 @@ import jp.developer.bbee.assemblepc.data.room.model.converter.DeviceUpdateConver
 import jp.developer.bbee.assemblepc.data.room.model.converter.DeviceUpdateConverter.toDomain
 import jp.developer.bbee.assemblepc.data.room.model.DeviceUpdate as DataDeviceUpdate
 import jp.developer.bbee.assemblepc.domain.model.Assembly
+import jp.developer.bbee.assemblepc.domain.model.AssemblyReview
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.model.Device
 import jp.developer.bbee.assemblepc.domain.model.DeviceUpdate
@@ -83,9 +84,12 @@ class DeviceRepositoryImpl @Inject constructor(
         return assemblies
             .groupBy { it.assemblyId }
             .map { (assemblyId, assemblyList) ->
+                val firstAssembly = assemblyList.first()
                 Composition.of(
                     assemblyId = assemblyId,
-                    assemblyName = assemblyList.first().assemblyName,
+                    assemblyName = firstAssembly.assemblyName,
+                    reviewText = firstAssembly.reviewText,
+                    reviewTime = firstAssembly.reviewTime,
                     assemblies = assemblyList,
                     devices = devices
                 )
@@ -95,6 +99,7 @@ class DeviceRepositoryImpl @Inject constructor(
     override suspend fun insertAssemblies(assemblies: List<Assembly>) {
         assemblyDeviceDao.insertAssemblies(assemblies.toData())
     }
+
 
     override suspend fun loadMaxAssemblyId(): Int? {
         return assemblyDeviceDao.loadMaxAssemblyId()
@@ -110,6 +115,14 @@ class DeviceRepositoryImpl @Inject constructor(
 
     override suspend fun renameAssemblyById(assemblyName: String, assemblyId: Int) {
         assemblyDeviceDao.renameAssemblyById(assemblyName, assemblyId)
+    }
+
+    override suspend fun updateAssemblyReview(assemblyReview: AssemblyReview) {
+        assemblyDeviceDao.updateAssemblyReview(
+            assemblyId = assemblyReview.assemblyId,
+            reviewText = assemblyReview.reviewText,
+            reviewTime = assemblyReview.reviewTime.toString()
+        )
     }
 
     override suspend fun existDeviceUpdate(device: String): Int {

@@ -1,9 +1,10 @@
 package jp.developer.bbee.assemblepc.domain.model
 
+import jp.developer.bbee.assemblepc.domain.model.serializer.PriceSerializer
 import kotlinx.serialization.Serializable
 import java.util.Locale
 
-@Serializable
+@Serializable(with = PriceSerializer::class)
 @JvmInline
 value class Price(val value: Int): Comparable<Price> {
 

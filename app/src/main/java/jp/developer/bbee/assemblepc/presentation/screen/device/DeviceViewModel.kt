@@ -164,7 +164,7 @@ class DeviceViewModel @Inject constructor(
                 deviceId = device.id,
                 deviceType = device.device,
                 deviceName = device.name,
-                deviceImgUrl = device.imgurl,
+                deviceImgUrl = device.imgUrl,
                 deviceDetail = device.detail,
                 devicePriceSaved = device.price,
                 devicePriceRecent = device.price,
@@ -227,7 +227,7 @@ sealed interface DeviceUiState {
             .map { convertToFullWidthKatakana(it) }
 
         val selectedDevices: List<DeviceWithQty> = composition.items
-            .filter { it.deviceType == deviceType.key }
+            .filter { it.deviceType == deviceType }
             .mapNotNull { item ->
                 devices.firstOrNull { item.deviceId == it.id }
                     ?.let { device -> DeviceWithQty(device, item.quantity) }
@@ -235,7 +235,7 @@ sealed interface DeviceUiState {
 
         val visibleDevices: List<Device> = when (currentDeviceSort) {
             SortType.POPULARITY -> devices.sortedBy { if (it.rank > 0) it.rank else Int.MAX_VALUE }
-            SortType.NEW_ARRIVAL -> devices.sortedByDescending { it.releasedate }
+            SortType.NEW_ARRIVAL -> devices.sortedByDescending { it.releaseDate }
             SortType.PRICE_ASC -> devices.sortedBy { if (it.price > 0) it.price else MAX_PRICE }
             SortType.PRICE_DESC -> devices.sortedByDescending { if (it.price > 0) it.price else ZERO_PRICE }
         }.filter { device ->

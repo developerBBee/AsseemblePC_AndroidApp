@@ -19,8 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,8 +31,6 @@ import jp.developer.bbee.assemblepc.R
 // TODO グリッドレイアウトに変更
 @Composable
 fun VariableButtonsRow (onSelected: (DeviceType) -> Unit) {
-    val context = LocalContext.current
-
     val screenWidth = LocalConfiguration.current.screenWidthDp
     // 画面幅340dpごとに列数を増やすレスポンシブレイアウト
     val rows = (screenWidth / 340) + 1
@@ -59,7 +57,7 @@ fun VariableButtonsRow (onSelected: (DeviceType) -> Unit) {
                             ),
                             onClick = { onSelected(type) }
                         ) {
-                            val text = context.getString(getDeviceNameId(type))
+                            val text = stringResource(getDeviceNameId(type))
                             val textSize = if (text.replace("\n","").length > 5) 16.sp else 20.sp
                             Text(
                                 text = text,
@@ -88,7 +86,7 @@ private fun getDeviceNameId(deviceType: DeviceType): Int =
         DeviceType.MEMORY -> R.string.pc_memory
         DeviceType.SSD -> R.string.ssd
         DeviceType.HDD -> R.string.hdd_35inch
-        DeviceType.VIDEO_CARD -> R.string.video_card
+        DeviceType.VIDEO_CARD -> R.string.video_card_2_line
         DeviceType.OS -> R.string.os_soft
         DeviceType.DISPLAY -> R.string.lcd_monitor
         DeviceType.KEYBOARD -> R.string.keyboard
@@ -97,6 +95,6 @@ private fun getDeviceNameId(deviceType: DeviceType): Int =
         DeviceType.BD_DRIVE -> R.string.bd_drive
         DeviceType.SOUND_CARD -> R.string.sound_card
         DeviceType.SPEAKER -> R.string.pc_speaker
-        DeviceType.FAN_CONTROLLER -> R.string.fan_controller
+        DeviceType.FAN_CONTROLLER -> R.string.fan_controller_2_line
         DeviceType.CASE_FAN -> R.string.case_fan
     }

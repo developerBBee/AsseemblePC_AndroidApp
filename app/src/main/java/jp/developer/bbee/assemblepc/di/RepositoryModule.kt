@@ -10,10 +10,12 @@ import jp.developer.bbee.assemblepc.data.remote.AssemblePcApi
 import jp.developer.bbee.assemblepc.data.repository.CurrentCompositionRepositoryImpl
 import jp.developer.bbee.assemblepc.data.repository.CurrentDeviceTypeRepositoryImpl
 import jp.developer.bbee.assemblepc.data.repository.DeviceRepositoryImpl
+import jp.developer.bbee.assemblepc.data.repository.ReviewRepositoryImpl
 import jp.developer.bbee.assemblepc.data.room.AssemblyDeviceDao
 import jp.developer.bbee.assemblepc.domain.repository.CurrentCompositionRepository
 import jp.developer.bbee.assemblepc.domain.repository.CurrentDeviceTypeRepository
 import jp.developer.bbee.assemblepc.domain.repository.DeviceRepository
+import jp.developer.bbee.assemblepc.domain.repository.ReviewRepository
 import javax.inject.Singleton
 
 @Module
@@ -38,4 +40,10 @@ object RepositoryModule {
     fun provideCurrentDeviceTypeRepository(
         @ApplicationContext context: Context,
     ): CurrentDeviceTypeRepository = CurrentDeviceTypeRepositoryImpl(context)
+
+    @Provides
+    @Singleton
+    fun provideReviewRepository(
+        api: AssemblePcApi,
+    ): ReviewRepository = ReviewRepositoryImpl(api)
 }

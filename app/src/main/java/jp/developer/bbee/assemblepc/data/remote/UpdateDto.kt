@@ -1,9 +1,9 @@
 package jp.developer.bbee.assemblepc.data.remote
 
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class UpdateDto(
     val kakakuupdate: Int?
 )

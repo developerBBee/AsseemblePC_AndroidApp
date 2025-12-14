@@ -67,7 +67,7 @@ fun DeviceRow(
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         AsyncImage(
-                            model = device.imgurl,
+                            model = device.imgUrl,
                             modifier = Modifier
                                 .height(80.dp)
                                 .width(80.dp),

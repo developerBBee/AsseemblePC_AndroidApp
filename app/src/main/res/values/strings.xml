@@ -15,7 +15,8 @@
     <string name="pc_memory">メモリ</string>
     <string name="ssd">SSD</string>
     <string name="hdd_35inch">HDD</string>
-    <string name="video_card">グラフィック\nボード</string>
+    <string name="video_card">グラフィックボード</string>
+    <string name="video_card_2_line">グラフィック\nボード</string>
     <string name="os_soft">OS</string>
     <string name="lcd_monitor">ディスプレイ</string>
     <string name="keyboard">キーボード</string>
@@ -24,7 +25,8 @@
     <string name="bd_drive">BDドライブ</string>
     <string name="sound_card">サウンドカード</string>
     <string name="pc_speaker">スピーカー</string>
-    <string name="fan_controller">ファン\nコントローラー</string>
+    <string name="fan_controller">ファンコントローラー</string>
+    <string name="fan_controller_2_line">ファン\nコントローラー</string>
     <string name="case_fan">ファン</string>
 
     <string name="label_device_selected">選択中のパーツ</string>

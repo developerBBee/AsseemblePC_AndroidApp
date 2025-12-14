@@ -1,5 +1,6 @@
 package jp.developer.bbee.assemblepc.data.room
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -13,7 +14,9 @@ import jp.developer.bbee.assemblepc.data.room.model.DeviceUpdate
  * または、データベースがまだ新しいバージョン番号でコンパイルされていない場合、自動移行は失敗します。
  */
 @Database(
-    entities = [Device::class, Assembly::class, DeviceUpdate::class], version = 1
+    entities = [Device::class, Assembly::class, DeviceUpdate::class],
+    version = 2,
+    autoMigrations = [AutoMigration(from = 1, to = 2)],
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

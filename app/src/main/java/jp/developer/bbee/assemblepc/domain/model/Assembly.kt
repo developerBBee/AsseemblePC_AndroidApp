@@ -1,6 +1,8 @@
 package jp.developer.bbee.assemblepc.domain.model
 
+import jp.developer.bbee.assemblepc.domain.model.serializer.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 
 @Serializable
 data class Assembly(
@@ -14,6 +16,11 @@ data class Assembly(
     val deviceDetail: String,
     val devicePriceSaved: Price,
     val devicePriceRecent: Price,
+    val reviewText: String? = null,
+    @Serializable(LocalDateTimeSerializer::class)
+    val reviewTime: LocalDateTime? = null,
+    @Serializable(LocalDateTimeSerializer::class)
+    val updatedAt: LocalDateTime = LocalDateTime.now(),
 )
 
 fun List<Assembly>.toCompositionItems(

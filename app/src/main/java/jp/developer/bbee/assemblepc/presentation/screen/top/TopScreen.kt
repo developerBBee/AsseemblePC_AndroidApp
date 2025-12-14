@@ -13,26 +13,32 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import jp.developer.bbee.assemblepc.R
+import jp.developer.bbee.assemblepc.common.Constants
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.presentation.ScreenRoute
+import jp.developer.bbee.assemblepc.presentation.common.BasePreview
 import jp.developer.bbee.assemblepc.presentation.navigateSingle
+import jp.developer.bbee.assemblepc.presentation.screen.top.components.AssemblyReviewDialog
 import jp.developer.bbee.assemblepc.presentation.screen.top.components.AssemblyThumbnail
 import jp.developer.bbee.assemblepc.presentation.screen.top.components.CreateAssemblyDialog
 import jp.developer.bbee.assemblepc.presentation.screen.top.components.DeleteAssemblyConfirmDialog
@@ -40,11 +46,13 @@ import jp.developer.bbee.assemblepc.presentation.screen.top.components.EditAssem
 import jp.developer.bbee.assemblepc.presentation.screen.top.components.RenameAssemblyConfirmDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @Composable
 fun TopScreen(
     navController: NavController,
     scope: CoroutineScope,
+    current: LocalDateTime = LocalDateTime.now(),
     topViewModel: TopViewModel = hiltViewModel(),
 ) {
     val uiState by topViewModel.uiState.collectAsStateWithLifecycle()
@@ -81,7 +89,9 @@ fun TopScreen(
         is TopUiState.Loaded -> {
             TopScreenContent(
                 allComposition = state.allComposition,
-                onCompositionClick = { topViewModel.selectComposition(it) },
+                current = current,
+                onCompositionClick = topViewModel::selectComposition,
+                onCompositionReviewClick = topViewModel::showReviewDialog,
                 onStartButtonClick = { topViewModel.showCreateDialog() }
             )
         }
@@ -108,7 +118,7 @@ fun TopScreen(
             val composition = state.compo
             EditAssemblyDialog(
                 selectedName = composition.assemblyName,
-                onDismiss = { topViewModel.clearDialog() },
+                onDismiss = topViewModel::clearDialog,
                 onAddParts = { topViewModel.addParts(composition) },
                 onShowComposition = { topViewModel.showComposition(composition) },
                 onRenameClick = { newName -> topViewModel.showRenameConfirm(composition, newName) },
@@ -123,7 +133,7 @@ fun TopScreen(
             RenameAssemblyConfirmDialog(
                 selectedName = selectedName,
                 newName = newName,
-                onDismiss = { topViewModel.clearDialog() },
+                onDismiss = topViewModel::clearDialog,
                 onConfirm = { topViewModel.renameAssembly(newName, assemblyId) }
             )
         }
@@ -133,7 +143,7 @@ fun TopScreen(
             val selectedName = state.compo.assemblyName
             DeleteAssemblyConfirmDialog(
                 selectedName = selectedName,
-                onDismiss = { topViewModel.clearDialog() },
+                onDismiss = topViewModel::clearDialog,
                 onConfirm = {
                     topViewModel.deleteAssembly(state.compo.assemblyId) {
                         Toast.makeText(
@@ -146,6 +156,16 @@ fun TopScreen(
             )
         }
 
+        is TopDialogUiState.ShowReview -> {
+            AssemblyReviewDialog(
+                reviewText = state.compo.reviewText,
+                reviewRequestEnabled = state.compo.isReviewExpired(current),
+                reviewing = state.reviewing,
+                onDismiss = topViewModel::clearDialog,
+                onStartReview = { topViewModel.startReview(state.compo) },
+            )
+        }
+
         null -> Unit
     }
 }
@@ -153,7 +173,9 @@ fun TopScreen(
 @Composable
 private fun TopScreenContent(
     allComposition: List<Composition>,
+    current: LocalDateTime,
     onCompositionClick: (Composition) -> Unit,
+    onCompositionReviewClick: (Composition) -> Unit,
     onStartButtonClick: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -171,7 +193,9 @@ private fun TopScreenContent(
                     painter = painterResource(id = R.mipmap.ic_launcher_foreground),
                     contentDescription = null
                 )
-                Spacer(modifier = Modifier.height(0.dp).weight(1f))
+                Spacer(modifier = Modifier
+                    .height(0.dp)
+                    .weight(1f))
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
@@ -179,7 +203,9 @@ private fun TopScreenContent(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(0.dp).weight(1f))
+                Spacer(modifier = Modifier
+                    .height(0.dp)
+                    .weight(1f))
             }
         }
 
@@ -190,7 +216,9 @@ private fun TopScreenContent(
             items(allComposition) { composition ->
                 AssemblyThumbnail(
                     composition = composition,
-                    onClick = { onCompositionClick(composition) }
+                    reviewIconTint = composition.getReviewIconTint(current),
+                    onClick = { onCompositionClick(composition) },
+                    onReviewClick = { onCompositionReviewClick(composition) },
                 )
             }
             if (allComposition.size > 2) {
@@ -211,5 +239,45 @@ private fun TopScreenContent(
                 fontWeight = FontWeight.Bold,
             )
         }
+    }
+}
+
+@Composable
+private fun Composition.getReviewIconTint(current: LocalDateTime): Color = when {
+    // 未レビュー
+    reviewText == null -> MaterialTheme.colors.primary
+
+    // レビュー済み（１ヶ月経過または構成変更）
+    isReviewExpired(current) -> MaterialTheme.colors.error
+
+    // レビュー済み（１ヶ月以内かつ構成未変更）
+    else -> MaterialTheme.colors.primaryVariant
+}
+
+@Preview
+@Composable
+private fun TopScreenEmptyPreview() {
+    BasePreview {
+        TopScreenContent(
+            allComposition = emptyList(),
+            current = LocalDateTime.now(),
+            onStartButtonClick = {},
+            onCompositionClick = {},
+            onCompositionReviewClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TopScreenContentPreview() {
+    BasePreview {
+        TopScreenContent(
+            allComposition = List(5) { Constants.COMPOSITION_SAMPLE },
+            current = LocalDateTime.now(),
+            onStartButtonClick = {},
+            onCompositionClick = {},
+            onCompositionReviewClick = {},
+        )
     }
 }

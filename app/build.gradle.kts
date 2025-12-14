@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.firebase.perf)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 android {
@@ -59,8 +60,11 @@ kotlin {
 }
 
 ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
     arg("room.generateKotlin", "true")
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {
@@ -73,6 +77,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
+    testImplementation(libs.truth)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 //    androidTestImplementation(libs.androidx.ui.test.junit4)
@@ -86,6 +91,7 @@ dependencies {
     implementation(libs.firebase.perf)
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
+    implementation(libs.converter.kotlinx.serialization)
     implementation(libs.moshi.kotlin)
 
     implementation(libs.hilt.android)

@@ -1,12 +1,12 @@
 package jp.developer.bbee.assemblepc.data.remote
 
 
-import com.squareup.moshi.JsonClass
 import jp.developer.bbee.assemblepc.domain.model.ZERO_PRICE
 import jp.developer.bbee.assemblepc.domain.model.toPrice
 import jp.developer.bbee.assemblepc.data.room.model.Device
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class DeviceDto(
     val results: List<Result>?
 ) {
@@ -45,7 +45,7 @@ data class DeviceDto(
     }
 }
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Result(
     val createddate: String?,
     val detail: String?,

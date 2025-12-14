@@ -28,11 +28,14 @@ class UpdateCurrentCompositionUseCase @Inject constructor(
             } else {
                 val deviceIdList = allAssemblies.map { it.deviceId }
                 val devices = deviceRepository.loadDeviceByIds(deviceIdList)
+                val firstAssembly = allAssemblies.first()
 
                 currentRepository.saveCurrentComposition(
                     Composition.of(
                         assemblyId = assemblyId,
-                        assemblyName = allAssemblies.first().assemblyName,
+                        assemblyName = firstAssembly.assemblyName,
+                        reviewText = firstAssembly.reviewText,
+                        reviewTime = firstAssembly.reviewTime,
                         assemblies = allAssemblies,
                         devices = devices
                     )

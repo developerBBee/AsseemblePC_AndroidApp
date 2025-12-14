@@ -62,7 +62,10 @@ interface AssemblyDeviceDao {
                 Assembly.deviceImgUrl,
                 Device.detail AS deviceDetail,
                 Assembly.devicePriceSaved,
-                Device.price AS devicePriceRecent
+                Device.price AS devicePriceRecent,
+                Assembly.reviewText,
+                Assembly.reviewTime,
+                Assembly.updatedAt
             FROM Assembly
             INNER JOIN Device
             ON Assembly.deviceId = Device.id
@@ -70,6 +73,10 @@ interface AssemblyDeviceDao {
         """
     )
     suspend fun loadAssemblyNewPrice(assemblyId: Int): List<Assembly>
+
+    @Query("UPDATE Assembly SET reviewText = :reviewText, reviewTime = :reviewTime" +
+            " WHERE assemblyId = :assemblyId ")
+    suspend fun updateAssemblyReview(assemblyId: Int, reviewText: String, reviewTime: String)
 
     /**
      * DeviceUpdate Table CRUD

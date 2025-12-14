@@ -1,8 +1,10 @@
 package jp.developer.bbee.assemblepc.data.room.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import jp.developer.bbee.assemblepc.domain.model.Price
+import java.time.LocalDateTime
 
 @Entity
 data class Assembly(
@@ -16,4 +18,8 @@ data class Assembly(
     val deviceDetail: String,
     val devicePriceSaved: Price,
     val devicePriceRecent: Price,
+    val reviewText: String? = null,
+    val reviewTime: String? = null,
+    @ColumnInfo(defaultValue = "2025-01-01T00:00:00.000000")
+    val updatedAt: String,
 )

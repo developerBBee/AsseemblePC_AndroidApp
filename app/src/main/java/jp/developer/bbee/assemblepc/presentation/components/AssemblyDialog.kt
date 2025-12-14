@@ -94,7 +94,7 @@ fun AssemblyDialog(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ){
                     AsyncImage(
-                        model = device.imgurl,
+                        model = device.imgUrl,
                         modifier = Modifier
                             .padding(end = 10.dp, bottom = 2.dp)
                             .height(100.dp)

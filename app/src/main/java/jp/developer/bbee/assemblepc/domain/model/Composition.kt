@@ -1,6 +1,10 @@
 package jp.developer.bbee.assemblepc.domain.model
 
+import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
+import jp.developer.bbee.assemblepc.domain.model.serializer.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import java.time.LocalDateTime
 
 /**
  * 構成情報
@@ -10,12 +14,35 @@ data class Composition(
     val assemblyId: Int,
     val assemblyName: String,
     val items: List<CompositionItem>,
+    val reviewText: String? = null,
+    @Serializable(with = LocalDateTimeSerializer::class)
+    val reviewTime: LocalDateTime? = null,
+    @Serializable(with = LocalDateTimeSerializer::class)
+    val updatedAt: LocalDateTime,
 ) {
+
+    fun getItem(deviceType: DeviceType): CompositionItem? =
+        items.firstOrNull { it.deviceType == deviceType }
+
+    fun updateReview(reviewText: String): Composition =
+        copy(
+            reviewText = reviewText,
+            reviewTime = LocalDateTime.now(),
+        )
+
+    fun isReviewExpired(current: LocalDateTime): Boolean = if (reviewTime == null) {
+        true
+    } else {
+        // レビューから１ヶ月経過、または構成に変更があった場合、再レビュー可能
+        current > reviewTime.plusMonths(1) || updatedAt > reviewTime
+    }
 
     companion object {
         fun of(
             assemblyId: Int,
             assemblyName: String,
+            reviewText: String?,
+            reviewTime: LocalDateTime?,
             assemblies: List<Assembly>,
             devices: List<Device>
         ): Composition {
@@ -27,7 +54,10 @@ data class Composition(
             return Composition(
                 assemblyId = assemblyId,
                 assemblyName = assemblyName,
-                items = items
+                items = items,
+                reviewText = reviewText,
+                reviewTime = reviewTime,
+                updatedAt = assemblies.maxOf { it.updatedAt },
             )
         }
     }
@@ -37,7 +67,7 @@ data class Composition(
 data class CompositionItem(
     val quantity: Int,
     val deviceId: String,
-    val deviceType: String,
+    val deviceType: DeviceType,
     val deviceName : String,
     val deviceImgUrl: String,
     val deviceDetail: String,
@@ -46,30 +76,32 @@ data class CompositionItem(
     val url: String,
     val price: Price,
     val rank: Int,
-    val releasedate: String,
+    val releaseDate: String,
     val invisible: Boolean,
     val flag1: Int?,
     val flag2: Int?,
-    val createddate: String?,
-    val lastupdate: String?,
+    @Serializable(with = LocalDateTimeSerializer::class)
+    val createdDate: LocalDateTime?,
+    @Serializable(with = LocalDateTimeSerializer::class)
+    val lastUpdate: LocalDateTime?,
 ) {
 
     fun toDevice(): Device {
         return Device(
             id = deviceId,
-            device = deviceType,
+            device = deviceType.key,
             name = deviceName,
-            imgurl = deviceImgUrl,
+            imgUrl = deviceImgUrl,
             url = url,
             detail = deviceDetail,
             price = price,
             rank = rank,
-            releasedate = releasedate,
+            releaseDate = releaseDate,
             invisible = invisible,
             flag1 = flag1,
             flag2 = flag2,
-            createddate = createddate,
-            lastupdate = lastupdate,
+            createdDate = createdDate,
+            lastUpdate = lastUpdate,
         )
     }
 
@@ -81,21 +113,21 @@ data class CompositionItem(
             return CompositionItem(
                 quantity = quantity,
                 deviceId = device.id,
-                deviceType = device.device,
+                deviceType = DeviceType.from(device.device),
                 deviceName = device.name,
-                deviceImgUrl = device.imgurl,
+                deviceImgUrl = device.imgUrl,
                 deviceDetail = device.detail,
                 devicePriceSaved = device.price,
                 devicePriceRecent = device.price,
                 url = device.url,
                 price = device.price,
                 rank = device.rank,
-                releasedate = device.releasedate,
+                releaseDate = device.releaseDate,
                 invisible = device.invisible,
                 flag1 = device.flag1,
                 flag2 = device.flag2,
-                createddate = device.createddate,
-                lastupdate = device.lastupdate,
+                createdDate = device.createdDate,
+                lastUpdate = device.lastUpdate,
             )
         }
     }

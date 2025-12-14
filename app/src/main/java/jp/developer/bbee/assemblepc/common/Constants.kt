@@ -105,17 +105,17 @@ object Constants {
         id = "1",
         device = DeviceType.MEMORY.key,
         name = "DDR4-3200 16GB x2",
-        imgurl = "https://example.com/pc_case.jpg",
+        imgUrl = "https://example.com/pc_case.jpg",
         url = "https://example.com/pc_case",
         detail = "メモリの詳細",
         price = 10000.toPrice(),
         rank = 1,
-        releasedate = "2021-01-01",
+        releaseDate = "2021-01-01",
         invisible = false,
         flag1 = null,
         flag2 = null,
-        createddate = null,
-        lastupdate = null,
+        createdDate = null,
+        lastUpdate = null,
     )
 
     val ASSEMBLY_SAMPLE = Assembly(
@@ -125,7 +125,7 @@ object Constants {
         deviceId = DEVICE_SAMPLE.id,
         deviceType = DEVICE_SAMPLE.device,
         deviceName = DEVICE_SAMPLE.name,
-        deviceImgUrl = DEVICE_SAMPLE.imgurl,
+        deviceImgUrl = DEVICE_SAMPLE.imgUrl,
         deviceDetail = DEVICE_SAMPLE.detail,
         devicePriceSaved = DEVICE_SAMPLE.price,
         devicePriceRecent = DEVICE_SAMPLE.price,
@@ -134,6 +134,8 @@ object Constants {
     val COMPOSITION_SAMPLE = Composition.of(
         assemblyId = ASSEMBLY_SAMPLE.assemblyId,
         assemblyName = ASSEMBLY_SAMPLE.assemblyName,
+        reviewText = null,
+        reviewTime = null,
         assemblies = listOf(ASSEMBLY_SAMPLE),
         devices = listOf(DEVICE_SAMPLE),
     )

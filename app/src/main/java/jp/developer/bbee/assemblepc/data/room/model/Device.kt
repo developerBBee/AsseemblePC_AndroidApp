@@ -2,7 +2,6 @@ package jp.developer.bbee.assemblepc.data.room.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import jp.developer.bbee.assemblepc.domain.model.Assembly
 import jp.developer.bbee.assemblepc.domain.model.Price
 
 @Entity
@@ -21,22 +20,4 @@ data class Device(
     val flag2: Int?,
     val createddate: String?,
     val lastupdate: String?
-) {
-
-    fun toAssembly(
-        assemblyId: Int,
-        assemblyName: String
-    ): Assembly {
-        return Assembly(
-            assemblyId = assemblyId,
-            assemblyName = assemblyName,
-            deviceId = id,
-            deviceType = device,
-            deviceName = name,
-            deviceImgUrl = imgurl,
-            deviceDetail = detail,
-            devicePriceSaved = price,
-            devicePriceRecent = price
-        )
-    }
-}
+)

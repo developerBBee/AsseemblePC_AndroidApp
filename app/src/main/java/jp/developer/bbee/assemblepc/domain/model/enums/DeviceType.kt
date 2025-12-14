@@ -1,8 +1,9 @@
 package jp.developer.bbee.assemblepc.domain.model.enums
 
+import jp.developer.bbee.assemblepc.domain.model.serializer.DeviceTypeSerializer
 import kotlinx.serialization.Serializable
 
-@Serializable
+@Serializable(with = DeviceTypeSerializer::class)
 enum class DeviceType(val key: String) {
     PC_CASE("pccase"),
     MOTHER_BOARD("motherboard"),

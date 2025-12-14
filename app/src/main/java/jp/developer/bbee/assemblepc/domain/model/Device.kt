@@ -1,20 +1,22 @@
 package jp.developer.bbee.assemblepc.domain.model
 
+import java.time.LocalDateTime
+
 data class Device(
     val id: String,
-    val device: String, // DeviceTypeのkeyになる
+    val device: String,
     val name: String,
-    val imgurl: String,
+    val imgUrl: String,
     val url: String,
     val detail: String,
     val price: Price,
     val rank: Int,
-    val releasedate: String,
+    val releaseDate: String,
     val invisible: Boolean,
     val flag1: Int?,
     val flag2: Int?,
-    val createddate: String?,
-    val lastupdate: String?
+    val createdDate: LocalDateTime?,
+    val lastUpdate: LocalDateTime?
 ) {
 
     fun toAssembly(
@@ -27,7 +29,7 @@ data class Device(
             deviceId = id,
             deviceType = device,
             deviceName = name,
-            deviceImgUrl = imgurl,
+            deviceImgUrl = imgUrl,
             deviceDetail = detail,
             devicePriceSaved = price,
             devicePriceRecent = price

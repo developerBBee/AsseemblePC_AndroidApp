@@ -1,7 +1,7 @@
 [versions]
 agp = "8.13.2"
 kotlin = "2.2.21"
-ksp = "2.3.3"
+ksp = "2.2.21-2.0.4"
 gms = "4.4.4"
 crashlytics = "3.0.6"
 perf = "2.0.2"
@@ -47,6 +47,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-perf = { group = "com.google.firebase", name = "firebase-perf" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+converter-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
 moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshiKotlin" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
@@ -82,3 +83,4 @@ gms = { id = "com.google.gms.google-services", version.ref = "gms" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "perf" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }

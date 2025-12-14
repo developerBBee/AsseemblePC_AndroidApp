@@ -6,7 +6,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.model.CompositionItem
 import jp.developer.bbee.assemblepc.domain.model.Device
-import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
 import jp.developer.bbee.assemblepc.domain.use_case.AddAssemblyUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.DeleteAssemblyUseCase
 import jp.developer.bbee.assemblepc.domain.use_case.GetCurrentCompositionUseCase
@@ -43,10 +42,7 @@ class AssemblyViewModel @Inject constructor(
                     AssemblyUiState.Error(error = "構成が設定されていません")
                 } else {
                     val sortedComposition = composition
-                        .copy(
-                            items = composition.items
-                                .sortedBy { DeviceType.from(it.deviceType).ordinal }
-                        )
+                        .copy(items = composition.items.sortedBy { it.deviceType.ordinal })
                     AssemblyUiState.ShowComposition(composition = sortedComposition)
                 }
             }

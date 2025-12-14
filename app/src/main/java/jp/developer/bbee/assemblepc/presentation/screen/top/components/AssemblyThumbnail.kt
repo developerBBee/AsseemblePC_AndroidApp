@@ -4,9 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Assistant
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,27 +22,39 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import jp.developer.bbee.assemblepc.common.Constants
 import jp.developer.bbee.assemblepc.domain.model.sumYen
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.model.CompositionItem
+import jp.developer.bbee.assemblepc.presentation.ui.theme.AssemblePCTheme
 
 @Composable
 fun AssemblyThumbnail(
     composition: Composition,
-    onClick: () -> Unit
+    reviewIconTint: Color,
+    onClick: () -> Unit,
+    onReviewClick: () -> Unit,
 ) {
     Card(elevation = 5.dp, modifier = Modifier.padding(10.dp)) {
-        ThumbnailContents(composition = composition, onClick = onClick)
+        ThumbnailContents(
+            composition = composition,
+            reviewIconTint = reviewIconTint,
+            onClick = onClick,
+            onReviewClick = onReviewClick,
+        )
     }
 }
 
 @Composable
 private fun ThumbnailContents(
     composition: Composition,
-    onClick: () -> Unit
+    reviewIconTint: Color,
+    onClick: () -> Unit,
+    onReviewClick: () -> Unit,
 ) {
     val items = composition.items
     val max = items.size
@@ -48,10 +65,13 @@ private fun ThumbnailContents(
             .height(300.dp)
             .border(3.dp, Color.LightGray)
             .clickable { onClick() }
-            .testTag(composition.assemblyName)
+            .testTag(composition.assemblyName),
+        contentAlignment = Alignment.TopEnd,
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(10.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp)
         ) {
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -108,11 +128,26 @@ private fun ThumbnailContents(
                 )
             }
         }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ){
+
+        Column(modifier = Modifier.fillMaxSize()){
             OverlayText(composition = composition)
+        }
+
+        IconButton(
+            onClick = onReviewClick,
+            modifier = Modifier
+                .padding(8.dp)
+                .background(
+                    color = MaterialTheme.colors.background,
+                    shape = RoundedCornerShape(8.dp)
+                )
+        ) {
+            Icon(
+                modifier = Modifier.size(48.dp),
+                imageVector = Icons.Default.Assistant,
+                tint = reviewIconTint,
+                contentDescription = "AIレビューアイコン",
+            )
         }
     }
 }
@@ -150,6 +185,19 @@ private fun OverlayText(composition: Composition) {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(30.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun AssemblyThumbnailPreview() {
+    AssemblePCTheme {
+        AssemblyThumbnail(
+            composition = Constants.COMPOSITION_SAMPLE,
+            reviewIconTint = MaterialTheme.colors.primary,
+            onClick = {},
+            onReviewClick = {},
         )
     }
 }
