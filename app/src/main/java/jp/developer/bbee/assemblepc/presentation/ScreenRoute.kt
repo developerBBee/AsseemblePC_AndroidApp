@@ -21,7 +21,7 @@ import jp.developer.bbee.assemblepc.presentation.ScreenRoute.TopScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class ScreenRoute(@StringRes val resourceId: Int) {
+sealed class ScreenRoute(@param:StringRes val resourceId: Int) {
     @Serializable
     data object TopScreen : ScreenRoute(R.string.top_screen)
 
@@ -53,7 +53,6 @@ val ROUTE_LIST = listOf(
 )
 
 fun NavBackStackEntry.toScreenRoute(): ScreenRoute? {
-    // Lint check incorrectly in K2 mode https://issuetracker.google.com/issues/372175033
     return ROUTE_LIST.firstOrNull { destination.hasRoute(it::class) }
 }
 

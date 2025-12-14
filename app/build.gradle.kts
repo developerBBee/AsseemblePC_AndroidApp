@@ -12,12 +12,12 @@ plugins {
 
 android {
     namespace = "jp.developer.bbee.assemblepc"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "jp.developer.bbee.assemblepc"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 9
         versionName = "1.8"
 
@@ -25,11 +25,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+    }
 
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-            arg("room.generateKotlin", "true")
-        }
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+        arg("room.generateKotlin", "true")
     }
 
     buildTypes {
