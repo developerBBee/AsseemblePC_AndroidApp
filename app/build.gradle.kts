@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -26,12 +28,6 @@ android {
             useSupportLibrary = true
         }
     }
-
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
-        arg("room.generateKotlin", "true")
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -45,9 +41,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         compose = true
         buildConfig = true
@@ -57,6 +50,17 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.generateKotlin", "true")
 }
 
 dependencies {
@@ -77,9 +81,9 @@ dependencies {
     implementation(libs.kotlin.serialization.json)
 
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics.ktx)
-    implementation(libs.firebase.crashlytics.ktx)
-    implementation(libs.firebase.perf.ktx)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.perf)
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.moshi.kotlin)
@@ -97,5 +101,6 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 
+    implementation (libs.androidx.material.icons.core)
     implementation (libs.androidx.material.icons.extended)
 }
