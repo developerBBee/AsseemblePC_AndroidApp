@@ -3,7 +3,7 @@ package jp.developer.bbee.assemblepc.data.remote
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface DeviceApi {
+interface AssemblePcApi {
     @GET("/api/update")
     suspend fun getLastUpdate(): UpdateDto
     @GET("/api/devicelist")

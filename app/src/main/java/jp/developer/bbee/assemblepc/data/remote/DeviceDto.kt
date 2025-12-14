@@ -4,7 +4,7 @@ package jp.developer.bbee.assemblepc.data.remote
 import com.squareup.moshi.JsonClass
 import jp.developer.bbee.assemblepc.domain.model.ZERO_PRICE
 import jp.developer.bbee.assemblepc.domain.model.toPrice
-import jp.developer.bbee.assemblepc.domain.model.Device
+import jp.developer.bbee.assemblepc.data.room.model.Device
 
 @JsonClass(generateAdapter = true)
 data class DeviceDto(

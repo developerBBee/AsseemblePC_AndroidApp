@@ -3,9 +3,9 @@ package jp.developer.bbee.assemblepc.data.room
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import jp.developer.bbee.assemblepc.domain.model.Assembly
-import jp.developer.bbee.assemblepc.domain.model.Device
-import jp.developer.bbee.assemblepc.domain.model.DeviceUpdate
+import jp.developer.bbee.assemblepc.data.room.model.Assembly
+import jp.developer.bbee.assemblepc.data.room.model.Device
+import jp.developer.bbee.assemblepc.data.room.model.DeviceUpdate
 
 /*
  * 注: Room 自動移行は、旧バージョンと新バージョンの両方のデータベースについて生成されたデータベース

@@ -1,7 +1,13 @@
-package jp.developer.bbee.assemblepc.domain.model
+package jp.developer.bbee.assemblepc.data.room.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import jp.developer.bbee.assemblepc.domain.model.Assembly
+import jp.developer.bbee.assemblepc.domain.model.Price
+
+@Entity
 data class Device(
-    val id: String,
+    @PrimaryKey val id: String,
     val device: String, // DeviceTypeのkeyになる
     val name: String,
     val imgurl: String,

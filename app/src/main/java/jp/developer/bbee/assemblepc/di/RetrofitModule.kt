@@ -7,7 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import jp.developer.bbee.assemblepc.common.Constants.BASE_URL
-import jp.developer.bbee.assemblepc.data.remote.DeviceApi
+import jp.developer.bbee.assemblepc.data.remote.AssemblePcApi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -18,13 +18,13 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideDeviceApi(): DeviceApi {
+    fun provideDeviceApi(): AssemblePcApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(
                 MoshiConverterFactory.create(
                     Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
                 )
-            ).build().create(DeviceApi::class.java)
+            ).build().create(AssemblePcApi::class.java)
     }
 }

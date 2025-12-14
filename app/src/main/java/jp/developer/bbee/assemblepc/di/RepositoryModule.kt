@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import jp.developer.bbee.assemblepc.data.remote.DeviceApi
+import jp.developer.bbee.assemblepc.data.remote.AssemblePcApi
 import jp.developer.bbee.assemblepc.data.repository.CurrentCompositionRepositoryImpl
 import jp.developer.bbee.assemblepc.data.repository.CurrentDeviceTypeRepositoryImpl
 import jp.developer.bbee.assemblepc.data.repository.DeviceRepositoryImpl
@@ -23,7 +23,7 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideDeviceRepository(
-        api: DeviceApi,
+        api: AssemblePcApi,
         dao: AssemblyDeviceDao
     ): DeviceRepository = DeviceRepositoryImpl(api, dao)
 

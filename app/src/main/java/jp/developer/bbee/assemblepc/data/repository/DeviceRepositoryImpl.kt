@@ -1,8 +1,15 @@
 package jp.developer.bbee.assemblepc.data.repository
 
-import jp.developer.bbee.assemblepc.data.remote.DeviceApi
+import jp.developer.bbee.assemblepc.data.remote.AssemblePcApi
 import jp.developer.bbee.assemblepc.data.remote.toIntUpdate
 import jp.developer.bbee.assemblepc.data.room.AssemblyDeviceDao
+import jp.developer.bbee.assemblepc.data.room.model.converter.AssemblyConverter.toData
+import jp.developer.bbee.assemblepc.data.room.model.converter.AssemblyConverter.toDomain
+import jp.developer.bbee.assemblepc.data.room.model.converter.DeviceConverter.toData
+import jp.developer.bbee.assemblepc.data.room.model.converter.DeviceConverter.toDomain
+import jp.developer.bbee.assemblepc.data.room.model.converter.DeviceUpdateConverter.toData
+import jp.developer.bbee.assemblepc.data.room.model.converter.DeviceUpdateConverter.toDomain
+import jp.developer.bbee.assemblepc.data.room.model.DeviceUpdate as DataDeviceUpdate
 import jp.developer.bbee.assemblepc.domain.model.Assembly
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.model.Device
@@ -12,7 +19,7 @@ import jp.developer.bbee.assemblepc.domain.repository.DeviceRepository
 import javax.inject.Inject
 
 class DeviceRepositoryImpl @Inject constructor(
-    private val api: DeviceApi,
+    private val api: AssemblePcApi,
     private val assemblyDeviceDao: AssemblyDeviceDao
 ) : DeviceRepository {
 
@@ -47,26 +54,27 @@ class DeviceRepositoryImpl @Inject constructor(
         if (storedUpdate.getOrDefault(deviceType, 0) == 0) {
             val storedDeviceUpdates = assemblyDeviceDao.loadDeviceUpdate(deviceType.key)
             if (storedDeviceUpdates.isNotEmpty()) {
-                storedUpdate.put(deviceType, storedDeviceUpdates.first().update)
+                storedUpdate[deviceType] = storedDeviceUpdates.first().update
             }
         }
         if (storedUpdate.getOrDefault(deviceType, 0) < apiUpdate) {
             val deviceList = api.getDeviceList(deviceType.key).toDevice()
-            deviceList.forEach { assemblyDeviceDao.insertDevice(it) }
-            assemblyDeviceDao.insertDeviceUpdate(DeviceUpdate(deviceType.key, apiUpdate))
-            return deviceList
+            assemblyDeviceDao.insertDevices(deviceList)
+            val deviceUpdate = DataDeviceUpdate(deviceType.key, apiUpdate)
+            assemblyDeviceDao.insertDeviceUpdate(deviceUpdate)
+            return deviceList.toDomain()
         }
-        return assemblyDeviceDao.loadDevice(deviceType.key)
+        return assemblyDeviceDao.loadDevice(deviceType.key).toDomain()
     }
 
     override suspend fun loadAssembly(assemblyId: Int): List<Assembly> {
-        return assemblyDeviceDao.loadAssembly(assemblyId)
+        return assemblyDeviceDao.loadAssembly(assemblyId).toDomain()
     }
 
     override suspend fun loadCompositions(): List<Composition> {
-        val assemblies = assemblyDeviceDao.loadAllAssembly()
+        val assemblies = assemblyDeviceDao.loadAllAssembly().toDomain()
         val deviceIdList = assemblies.map { it.deviceId }
-        val devices = assemblyDeviceDao.loadDeviceByIds(deviceIdList)
+        val devices = assemblyDeviceDao.loadDeviceByIds(deviceIdList).toDomain()
 
         if (assemblies.isEmpty() || devices.isEmpty()) {
             return emptyList()
@@ -85,7 +93,7 @@ class DeviceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertAssemblies(assemblies: List<Assembly>) {
-        assemblyDeviceDao.insertAssemblies(assemblies)
+        assemblyDeviceDao.insertAssemblies(assemblies.toData())
     }
 
     override suspend fun loadMaxAssemblyId(): Int? {
@@ -93,7 +101,7 @@ class DeviceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAssemblies(assemblies: List<Assembly>) {
-        assemblyDeviceDao.deleteAssembly(assemblies)
+        assemblyDeviceDao.deleteAssembly(assemblies.toData())
     }
 
     override suspend fun deleteAssemblyById(assemblyId: Int) {
@@ -109,22 +117,22 @@ class DeviceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun loadDeviceUpdate(device: String): List<DeviceUpdate> {
-        return assemblyDeviceDao.loadDeviceUpdate(device)
+        return assemblyDeviceDao.loadDeviceUpdate(device).toDomain()
     }
 
     override suspend fun insertDeviceUpdate(deviceUpdate: DeviceUpdate) {
-        assemblyDeviceDao.insertDeviceUpdate(deviceUpdate)
+        assemblyDeviceDao.insertDeviceUpdate(deviceUpdate.toData())
     }
 
     override suspend fun loadDevice(device: String): List<Device> {
-        return assemblyDeviceDao.loadDevice(device)
+        return assemblyDeviceDao.loadDevice(device).toDomain()
     }
 
     override suspend fun loadDeviceByIds(deviceIds: List<String>): List<Device> {
-        return assemblyDeviceDao.loadDeviceByIds(deviceIds)
+        return assemblyDeviceDao.loadDeviceByIds(deviceIds).toDomain()
     }
 
     override suspend fun insertDevice(device: Device) {
-        assemblyDeviceDao.insertDevice(device)
+        assemblyDeviceDao.insertDevice(device.toData())
     }
 }

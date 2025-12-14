@@ -1,9 +1,9 @@
 package jp.developer.bbee.assemblepc.data.room
 
 import androidx.room.*
-import jp.developer.bbee.assemblepc.domain.model.Assembly
-import jp.developer.bbee.assemblepc.domain.model.Device
-import jp.developer.bbee.assemblepc.domain.model.DeviceUpdate
+import jp.developer.bbee.assemblepc.data.room.model.Assembly
+import jp.developer.bbee.assemblepc.data.room.model.Device
+import jp.developer.bbee.assemblepc.data.room.model.DeviceUpdate
 
 @Dao
 interface AssemblyDeviceDao {
@@ -13,6 +13,9 @@ interface AssemblyDeviceDao {
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDevice(device: Device)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDevices(devices: List<Device>)
 
     @Query("SELECT * FROM Device WHERE device = :device")
     suspend fun loadDevice(device: String): List<Device>
