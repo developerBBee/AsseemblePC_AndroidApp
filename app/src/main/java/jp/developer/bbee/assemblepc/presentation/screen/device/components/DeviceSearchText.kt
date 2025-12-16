@@ -19,7 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import jp.developer.bbee.assemblepc.R
 
 @Composable
 fun DeviceSearchText(
@@ -44,10 +46,10 @@ fun DeviceSearchText(
                 Row {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "検索バー"
+                        contentDescription = stringResource(R.string.search_description)
                     )
                     if (!hasFocusOrText) {
-                        Text(text = "検索")
+                        Text(text = stringResource(R.string.label_search))
                     }
                 }
             },
@@ -62,8 +64,9 @@ fun DeviceSearchText(
         )
 
         SortMenu(
+            modifier = Modifier.fillMaxSize(),
             currentSortType = currentSortType,
-            onSortChanged = onSortChanged
+            onSortChanged = onSortChanged,
         )
     }
 }

@@ -65,10 +65,12 @@ fun DeviceScreen(
             }
 
             is DeviceUiState.Error -> {
-                val text = stringResource(id = R.string.network_err_msg)
-                val errorText = if (state.error.isNullOrEmpty()) "" else "\n\n${state.error}"
+                val builder = StringBuilder(stringResource(id = R.string.network_error_message))
+                if (state.error?.isNotEmpty() == true) {
+                    builder.append("\n\n").append(state.error)
+                }
                 Text(
-                    text = "$text$errorText",
+                    text = builder.toString(),
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }

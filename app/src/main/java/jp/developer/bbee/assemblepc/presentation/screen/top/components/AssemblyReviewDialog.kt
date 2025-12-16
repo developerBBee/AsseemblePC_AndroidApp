@@ -1,16 +1,12 @@
 package jp.developer.bbee.assemblepc.presentation.screen.top.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
@@ -18,9 +14,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import jp.developer.bbee.assemblepc.R
 
 @Composable
 fun AssemblyReviewDialog(
@@ -36,7 +34,7 @@ fun AssemblyReviewDialog(
         title = {
             Column {
                 Text(
-                    text = "AIによる構成レビュー",
+                    text = stringResource(R.string.ai_review_title),
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 20.sp,
                 )
@@ -74,12 +72,12 @@ fun AssemblyReviewDialog(
                     modifier = Modifier.padding(end = 10.dp),
                     onClick = onDismiss
                 ) {
-                    Text(text = "閉じる")
+                    Text(text = stringResource(R.string.label_close))
                 }
 
                 if (reviewRequestEnabled) {
                     Button(onClick = onStartReview, enabled = !reviewing) {
-                        Text(text = "AIレビュー")
+                        Text(text = stringResource(R.string.label_ai_review))
                     }
                 }
             }

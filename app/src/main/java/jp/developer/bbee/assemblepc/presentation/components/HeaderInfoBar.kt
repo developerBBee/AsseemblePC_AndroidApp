@@ -10,12 +10,14 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import jp.developer.bbee.assemblepc.R
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.model.sumYen
 
@@ -41,7 +43,7 @@ private fun HeaderContent(
     val assemblyName = composition.assemblyName
     val totalPriceText = composition.items.map { it.devicePriceRecent * it.quantity }.sumYen()
 
-    val screenWidth = LocalConfiguration.current.screenWidthDp
+    val screenWidth = LocalWindowInfo.current.containerSize.width
     val fontSize = if (screenWidth < 600) 18.sp else 24.sp
 
     Surface(
@@ -58,7 +60,7 @@ private fun HeaderContent(
                 modifier = Modifier
                     .width(0.dp)
                     .weight(1f),
-                text = "構成名:$assemblyName",
+                text = stringResource(R.string.assembly_name, assemblyName),
                 fontSize = fontSize,
                 fontWeight = FontWeight.ExtraBold,
                 maxLines = 1,
@@ -69,7 +71,7 @@ private fun HeaderContent(
 
             // TODO: 価格のインクリメントアニメーションを追加したい
             Text(
-                text = " 合計 $totalPriceText",
+                text = stringResource(R.string.assembly_total_price, totalPriceText),
                 fontSize = fontSize,
                 fontWeight = FontWeight.ExtraBold,
                 maxLines = 1,

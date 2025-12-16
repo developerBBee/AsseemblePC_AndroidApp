@@ -11,7 +11,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import jp.developer.bbee.assemblepc.R
 import jp.developer.bbee.assemblepc.common.Constants
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.presentation.ROUTE_LIST
@@ -34,7 +36,7 @@ fun BottomNavBar(
                 icon = {
                     Icon(
                         imageVector = screenRoute.getIcon(),
-                        contentDescription = "ナビゲーションアイコン"
+                        contentDescription = stringResource(R.string.navigation_icon_description),
                     )
                 },
                 label = { Text(text = screenRoute.name()) },

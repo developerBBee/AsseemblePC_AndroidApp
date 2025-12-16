@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -26,11 +27,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import jp.developer.bbee.assemblepc.R
 import jp.developer.bbee.assemblepc.common.Constants
 import jp.developer.bbee.assemblepc.domain.model.sumYen
 import jp.developer.bbee.assemblepc.domain.model.Composition
 import jp.developer.bbee.assemblepc.domain.model.CompositionItem
-import jp.developer.bbee.assemblepc.presentation.ui.theme.AssemblePCTheme
+import jp.developer.bbee.assemblepc.presentation.common.BaseBGPreview
 
 @Composable
 fun AssemblyThumbnail(
@@ -83,21 +85,21 @@ private fun ThumbnailContents(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
-                    contentDescription = "左上の画像"
+                    contentDescription = stringResource(R.string.thumbnail_top_start_description)
                 )
                 AsyncImage(
                     model = if (max > 1) items[1].deviceImgUrl else null,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
-                    contentDescription = "中上の画像"
+                    contentDescription = stringResource(R.string.thumbnail_top_center_description)
                 )
                 AsyncImage(
                     model = if (max > 2) items[2].deviceImgUrl else null,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
-                    contentDescription = "右上の画像"
+                    contentDescription = stringResource(R.string.thumbnail_top_end_description)
                 )
             }
             Row(
@@ -110,21 +112,21 @@ private fun ThumbnailContents(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
-                    contentDescription = "左下の画像"
+                    contentDescription = stringResource(R.string.thumbnail_bottom_start_description)
                 )
                 AsyncImage(
                     model = if (max > 4) items[4].deviceImgUrl else null,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
-                    contentDescription = "中下の画像"
+                    contentDescription = stringResource(R.string.thumbnail_bottom_center_description)
                 )
                 AsyncImage(
                     model = if (max > 5) items[5].deviceImgUrl else null,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxSize(),
-                    contentDescription = "右下の画像"
+                    contentDescription = stringResource(R.string.thumbnail_bottom_end_description)
                 )
             }
         }
@@ -146,7 +148,7 @@ private fun ThumbnailContents(
                 modifier = Modifier.size(48.dp),
                 imageVector = Icons.Default.Assistant,
                 tint = reviewIconTint,
-                contentDescription = "AIレビューアイコン",
+                contentDescription = stringResource(R.string.ai_review_icon_description),
             )
         }
     }
@@ -174,7 +176,10 @@ private fun OverlayText(composition: Composition) {
             modifier = Modifier.align(Alignment.Center)
         )
         Text(
-            text = "総額 " + items.map { it.devicePriceRecent * it.quantity }.sumYen(),
+            text = stringResource(
+                R.string.total_price,
+                items.map { it.devicePriceRecent * it.quantity }.sumYen()
+            ),
             fontSize = 32.sp,
             fontWeight = FontWeight.ExtraBold,
             fontStyle = FontStyle.Italic,
@@ -192,7 +197,7 @@ private fun OverlayText(composition: Composition) {
 @Preview
 @Composable
 private fun AssemblyThumbnailPreview() {
-    AssemblePCTheme {
+    BaseBGPreview {
         AssemblyThumbnail(
             composition = Constants.COMPOSITION_SAMPLE,
             reviewIconTint = MaterialTheme.colors.primary,

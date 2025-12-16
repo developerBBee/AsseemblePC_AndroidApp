@@ -12,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -20,12 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jp.developer.bbee.assemblepc.BuildConfig
+import jp.developer.bbee.assemblepc.R
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -53,7 +54,7 @@ fun EditAssemblyDialog(
                     fontSize = 20.sp,
                 )
                 Text(
-                    text = "を選択中",
+                    text = stringResource(R.string.assembly_selected),
                     fontSize = 16.sp,
                 )
             }
@@ -61,14 +62,14 @@ fun EditAssemblyDialog(
         text = {
             Column {
                 Text(
-                    text = "構成の名称(変更)",
-                    fontWeight = FontWeight.Bold
+                    text = stringResource(R.string.edit_name_caption),
+                    fontWeight = FontWeight.Bold,
                 )
                 TextField(
                     value = newName,
                     onValueChange = { if (it.length <= 20) newName = it },
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text(text = "構成名称") },
+                    placeholder = { Text(text = stringResource(R.string.edit_name_placeholder)) },
                     maxLines = 1,
                     singleLine = true,
                 )
@@ -77,7 +78,7 @@ fun EditAssemblyDialog(
                     enabled = changeNameButtonEnable,
                     onClick = { onRenameClick(newName) }
                 ) {
-                    Text(text = "更新")
+                    Text(text = stringResource(R.string.label_update))
                 }
             }
         },
@@ -87,7 +88,7 @@ fun EditAssemblyDialog(
                     .padding(start = 15.dp, end = 15.dp, bottom = 5.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
+                verticalAlignment = Alignment.Bottom,
             ) {
                 // 左側ボタン（上：構成を削除　下：キャンセル）
                 Column {
@@ -95,14 +96,14 @@ fun EditAssemblyDialog(
                         modifier = Modifier.testTag("delete_composition_button"),
                         onClick = onDeleteClick
                     ) {
-                        Text(text = "構成を削除")
+                        Text(text = stringResource(R.string.delete_assembly))
                     }
 
                     Button(
                         modifier = Modifier.testTag("cancel_composition_dialog_button"),
                         onClick = onDismiss
                     ) {
-                        Text(text = "キャンセル")
+                        Text(text = stringResource(R.string.label_cancel))
                     }
                 }
 
@@ -114,7 +115,7 @@ fun EditAssemblyDialog(
                             .testTag("add_parts_button"),
                         onClick = onAddParts
                     ) {
-                        Text(text = "パーツを追加")
+                        Text(text = stringResource(R.string.add_parts))
                     }
 
                     Button(
@@ -123,7 +124,7 @@ fun EditAssemblyDialog(
                             .testTag("show_assembly_button"),
                         onClick = onShowComposition
                     ) {
-                        Text(text = "構成確認")
+                        Text(text = stringResource(R.string.confirm_assembly))
                     }
                 }
             }

@@ -58,7 +58,7 @@ fun AssemblyRow(
                         .padding(5.dp)
                         .height(80.dp)
                         .width(80.dp),
-                    contentDescription = "製品画像"
+                    contentDescription = stringResource(R.string.item_image_description),
                 )
 
                 // 製品名

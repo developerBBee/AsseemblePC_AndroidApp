@@ -8,8 +8,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import jp.developer.bbee.assemblepc.R
 
 @Composable
 fun RenameAssemblyConfirmDialog(
@@ -22,13 +24,13 @@ fun RenameAssemblyConfirmDialog(
     AlertDialog(
         shape = RoundedCornerShape(10.dp),
         onDismissRequest = onDismiss,
-        title = { Text(text = "構成名の変更確認") },
+        title = { Text(text = stringResource(R.string.confirm_assembly_name_change)) },
         text = {
             Column {
                 Text(text = selectedName, fontWeight = FontWeight.ExtraBold)
-                Text(text = "を")
+                Text(text = stringResource(R.string.to))
                 Text(text = newName, fontWeight = FontWeight.ExtraBold)
-                Text(text = "に変更します")
+                Text(text = stringResource(R.string.change))
             }
         },
         buttons = {
@@ -45,11 +47,11 @@ fun RenameAssemblyConfirmDialog(
                     modifier = Modifier.padding(end = 10.dp),
                     onClick = onDismiss
                 ) {
-                    Text(text = "キャンセル")
+                    Text(text = stringResource(R.string.label_cancel))
                 }
 
                 Button(onClick = onConfirm) {
-                    Text(text = "確定")
+                    Text(text = stringResource(R.string.label_confirm))
                 }
             }
         }

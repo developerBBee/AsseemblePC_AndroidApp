@@ -19,10 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import jp.developer.bbee.assemblepc.R
 import jp.developer.bbee.assemblepc.presentation.common.BaseBGPreview
 
 @Composable
@@ -42,7 +44,7 @@ fun NumberEditor(
             Icon(
                 modifier = Modifier.testTag("minus_button"),
                 imageVector = Icons.Default.ExposureNeg1,
-                contentDescription = "マイナスボタン",
+                contentDescription = stringResource(R.string.minus_button_description),
                 tint = Color.Blue,
             )
         }
@@ -62,7 +64,7 @@ fun NumberEditor(
             Icon(
                 modifier = Modifier.testTag("plus_button"),
                 imageVector = Icons.Default.ExposurePlus1,
-                contentDescription = "プラスボタン",
+                contentDescription = stringResource(R.string.plus_button_description),
                 tint = Color.Red,
             )
         }

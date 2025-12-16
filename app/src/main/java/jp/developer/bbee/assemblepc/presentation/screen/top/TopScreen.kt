@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -101,7 +102,7 @@ fun TopScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = state.error ?: "エラーが発生しました")
+                Text(text = state.error ?: stringResource(R.string.alternative_error_message))
             }
         }
     }
@@ -141,16 +142,13 @@ fun TopScreen(
         is TopDialogUiState.ShowDeleteConfirm -> {
             val context = LocalContext.current
             val selectedName = state.compo.assemblyName
+            val deletedMessage = stringResource(R.string.deleted_message, selectedName)
             DeleteAssemblyConfirmDialog(
                 selectedName = selectedName,
                 onDismiss = topViewModel::clearDialog,
                 onConfirm = {
                     topViewModel.deleteAssembly(state.compo.assemblyId) {
-                        Toast.makeText(
-                            context,
-                            "${selectedName}を削除しました",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context, deletedMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
             )
@@ -199,7 +197,7 @@ private fun TopScreenContent(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = "「構成を新規作成」をタップして開始",
+                    text = stringResource(R.string.start_assembly_guide),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -234,7 +232,7 @@ private fun TopScreenContent(
         ) {
             Text(
                 modifier = Modifier.testTag("start_button"),
-                text = "構成を新規作成",
+                text = stringResource(R.string.start_assembly),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
             )

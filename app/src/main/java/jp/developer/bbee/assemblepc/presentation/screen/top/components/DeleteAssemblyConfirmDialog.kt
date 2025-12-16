@@ -13,9 +13,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import jp.developer.bbee.assemblepc.R
 
 @Composable
 fun DeleteAssemblyConfirmDialog(
@@ -36,7 +38,8 @@ fun DeleteAssemblyConfirmDialog(
                 )
 
                 Text(
-                    text = "　の削除確認",
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = stringResource(R.string.delete_confirmation_title),
                     fontSize = 16.sp,
                 )
             }
@@ -44,7 +47,7 @@ fun DeleteAssemblyConfirmDialog(
         text = {
             Column {
                 Text(
-                    text = "構成を削除しますか？",
+                    text = stringResource(R.string.delete_confirmation_massage),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -63,11 +66,11 @@ fun DeleteAssemblyConfirmDialog(
                     modifier = Modifier.padding(end = 10.dp),
                     onClick = onDismiss
                 ) {
-                    Text(text = "キャンセル")
+                    Text(text = stringResource(R.string.label_cancel))
                 }
 
                 Button(onClick = onConfirm) {
-                    Text(text = "構成を削除")
+                    Text(text = stringResource(R.string.delete_assembly))
                 }
             }
         }

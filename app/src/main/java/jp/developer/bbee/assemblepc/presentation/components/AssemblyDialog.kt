@@ -99,7 +99,7 @@ fun AssemblyDialog(
                             .padding(end = 10.dp, bottom = 2.dp)
                             .height(100.dp)
                             .width(100.dp),
-                        contentDescription = "製品画像"
+                        contentDescription = stringResource(R.string.item_image_description),
                     )
 
                     Text(

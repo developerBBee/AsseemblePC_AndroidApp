@@ -19,12 +19,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jp.developer.bbee.assemblepc.BuildConfig
+import jp.developer.bbee.assemblepc.R
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -41,7 +43,7 @@ fun CreateAssemblyDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "構成を新規作成しますか？",
+                text = stringResource(R.string.create_new_assembly),
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 20.sp,
             )
@@ -49,7 +51,7 @@ fun CreateAssemblyDialog(
         text = {
             Column {
                 Text(
-                    text = "構成の名称を記入",
+                    text = stringResource(R.string.input_assembly_name),
                     fontWeight = FontWeight.Bold
                 )
                 TextField(
@@ -58,7 +60,9 @@ fun CreateAssemblyDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("assembly_name_text_field"),
-                    placeholder = { Text(text = "構成名称") },
+                    placeholder = {
+                        Text(text = stringResource(R.string.assembly_name_placeholder))
+                    },
                     maxLines = 1,
                     singleLine = true,
                 )
@@ -69,7 +73,7 @@ fun CreateAssemblyDialog(
             Row (modifier = Modifier.padding(10.dp)) {
                 Spacer(modifier = Modifier.weight(1f))
                 Button(onClick = onDismiss) {
-                    Text(text = "キャンセル")
+                    Text(text = stringResource(R.string.label_cancel))
                 }
                 Button(
                     modifier = Modifier
@@ -77,7 +81,7 @@ fun CreateAssemblyDialog(
                         .testTag("create_assembly_button"),
                     onClick = { onCreationStart(assemblyName) }
                 ) {
-                    Text(text = "新規作成")
+                    Text(text = stringResource(R.string.create_new))
                 }
             }
         }
