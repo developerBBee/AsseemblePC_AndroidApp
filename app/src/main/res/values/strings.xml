@@ -50,7 +50,7 @@
     <string name="to">を</string>
     <string name="change">に変更します</string>
 
-    <string name="total_price">総額 $1%s</string>
+    <string name="total_price">総額 %1$s</string>
     <string name="label_device_selected">選択中のパーツ</string>
     <string name="title_edit_assembly">構成の編集</string>
     <string name="title_add_assembly">構成に追加しますか？</string>
@@ -58,7 +58,7 @@
     <string name="delete_assembly">構成を削除</string>
     <string name="delete_confirmation_title">の削除確認</string>
     <string name="delete_confirmation_massage">構成を削除しますか？</string>
-    <string name="deleted_message">$1%sを削除しました</string>
+    <string name="deleted_message">%1$sを削除しました</string>
     <string name="label_cancel">キャンセル</string>
     <string name="label_add">追加</string>
     <string name="label_change">変更</string>
