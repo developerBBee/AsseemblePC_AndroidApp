@@ -3,7 +3,6 @@ package jp.developer.bbee.assemblepc.domain.model
 import jp.developer.bbee.assemblepc.domain.model.enums.DeviceType
 import jp.developer.bbee.assemblepc.domain.model.serializer.LocalDateTimeSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import java.time.LocalDateTime
 
 /**
@@ -33,8 +32,8 @@ data class Composition(
     fun isReviewExpired(current: LocalDateTime): Boolean = if (reviewTime == null) {
         true
     } else {
-        // レビューから１ヶ月経過、または構成に変更があった場合、再レビュー可能
-        current > reviewTime.plusMonths(1) || updatedAt > reviewTime
+        // レビューから１週間経過、または構成に変更があった場合、再レビュー可能
+        current > reviewTime.plusWeeks(1) || updatedAt > reviewTime
     }
 
     companion object {

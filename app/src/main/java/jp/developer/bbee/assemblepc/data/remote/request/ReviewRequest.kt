@@ -23,10 +23,10 @@ data class ReviewRequest(
 
         fun from(composition: Composition): ReviewRequest = ReviewRequest(
             pcCase = composition.getItem(DeviceType.PC_CASE)?.let(ReviewItem::from),
-            motherboard = composition.getItem(DeviceType.PC_CASE)?.let(ReviewItem::from),
-            powerSupply = composition.getItem(DeviceType.PC_CASE)?.let(ReviewItem::from),
-            cpu = composition.getItem(DeviceType.PC_CASE)?.let(ReviewItem::from),
-            cpuCooler = composition.getItem(DeviceType.PC_CASE)?.let(ReviewItem::from),
+            motherboard = composition.getItem(DeviceType.MOTHER_BOARD)?.let(ReviewItem::from),
+            powerSupply = composition.getItem(DeviceType.POWER_SUPPLY)?.let(ReviewItem::from),
+            cpu = composition.getItem(DeviceType.CPU)?.let(ReviewItem::from),
+            cpuCooler = composition.getItem(DeviceType.CPU_COOLER)?.let(ReviewItem::from),
             memories = composition.getItem(DeviceType.MEMORY)?.let(ReviewItem::fromMany)
                 ?: emptyList(),
             storages = listOfNotNull(
